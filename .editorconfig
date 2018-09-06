@@ -8,10 +8,10 @@ end_of_line = clrf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[{*.pug}]
+[*. {pug}]
 indent_style = tab
 indent_size = 4
 
-[{*.json,*.yml*.md}]
+[*. {json,yml,md}]
 indent_style = tab
 indent_size = 2
