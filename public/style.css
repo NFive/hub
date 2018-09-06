@@ -1,0 +1,29 @@
+body {
+	font-family: 'Open Sans', sans-serif;
+}
+
+header {
+	height: 5rem;
+}
+
+header .container {
+	max-width: 1540px;
+}
+
+header h1 a {
+	line-height: 4.5rem;
+	color: black;
+}
+
+header h1 a:hover {
+	text-decoration: none;
+}
+
+header form input#search {
+	margin-top: 1.25rem;
+	font-family: 'Courier New', Courier, monospace;
+}
+
+header form input#search::placeholder {
+	color: #A5A5A5;
+}

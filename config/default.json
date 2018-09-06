@@ -1,6 +1,7 @@
 {
-  "name": "nfivehub",
+  "name": "NFive Hub",
   "port": 3000,
   "db": "mongodb://localhost/nfivehub",
-  "prettyHtml": true
+  "prettyHtml": true,
+  "cacheAge": 86400
 }
