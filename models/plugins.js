@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const data = new mongoose.Schema({
+const Plugins = new mongoose.Schema({
 	gh_id: { type: Number, unique: true},
 	user: { type: String},             //owner/login
 	repo: { type: String },             //name
@@ -18,8 +18,14 @@ const data = new mongoose.Schema({
 	last_grab: { type: Date, default: Date.now()}
 },
 {
-	_id: false,
 	timestamps: true
 });
 
-module.exports = mongoose.model('plugins', data);
+Plugins.index({
+	user: 'text',
+	repo: 'text',
+	full_name: 'text',
+	description: 'text'
+});
+
+module.exports = mongoose.model('plugins', Plugins);

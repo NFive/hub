@@ -1,5 +1,6 @@
 const router = require('koa-router')();
 const config = require('config');
+const search = require('./controllers/search');
 const orgs = require('./controllers/orgs');
 const projects = require('./controllers/projects');
 
@@ -10,6 +11,7 @@ router
 			title: config.name
 		});
 	})
+	.get('/search', search.view)
 	.get('/:org', orgs.view)
 	.get('/:org/:project', projects.view);
 
