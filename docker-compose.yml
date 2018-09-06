@@ -1,7 +1,7 @@
 version: '2'
+
 services:
   nfivehub:
-    container_name: app
     image: node:latest
     command: "npm start"
     working_dir: /app
@@ -14,8 +14,7 @@ services:
     environment:
      - NODE_ENV=docker
 
-  hubdb:
-    container_name: db
+  db:
     image: mongo:latest
     command: "--smallfiles"
     volumes:

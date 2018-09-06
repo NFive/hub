@@ -2,7 +2,7 @@
   "name": "nfive-hub",
   "version": "1.0.0",
   "description": "Plugin Hub for NFive Repositories hosted via Github",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "repository": "nobodyshome/nfive-hub",
   "homepage": "https://github.com/nobodyshome/nfive-hub",
   "author": "Ryan Smith <contact@nobodyshome.me.uk> (https://nobodyshome.me.uk/)",
@@ -11,7 +11,7 @@
     "url": "https://github.com/nobodyshome/nfive-hub/issues"
   },
   "keywords": [
-    "nfive-plugin",
+    "nfive-plugins",
     "nfive"
   ],
   "main": "server.js",
@@ -21,22 +21,19 @@
   },
   "dependencies": {
     "@octokit/rest": "^15.11.1",
-    "config": "^1.16.0",
+    "config": "^2.0.1",
     "cron": "^1.4.1",
     "koa": "^2.5.2",
-    "koa-body": "^2.3.0",
-    "koa-compress": "^2.0.0",
+    "koa-compress": "^3.0.0",
     "koa-logger": "^3.0.1",
     "koa-router": "^7.2.1",
     "koa-static-cache": "^5.1.1",
     "koa-views": "^6.1.4",
     "mongoose": "^5.2.13",
-    "pug": "^2.0.0-rc.2",
-    "shortid": "^2.2.4",
-    "util": "^0.11.0"
+    "pug": "^2.0.0-rc.2"
   },
   "devDependencies": {
-    "eslint": "^4.3.0",
+    "eslint": "^5.5.0",
     "nodemon": "^1.18.4",
     "pug-lint": "^2.3.0"
   }

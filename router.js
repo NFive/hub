@@ -1,17 +1,16 @@
-const router = require('koa-router')()
-const config = require('config')
-const users = require('./controller/user')
-const repos = require('./controller/repo')
+const router = require('koa-router')();
+const config = require('config');
+const orgs = require('./controllers/orgs');
+const projects = require('./controllers/projects');
 
 router
 	.get('/', async (ctx) => {
 		await ctx.render('index', {
 			pretty: config.prettyHtml,
-			title: config.name,
-			url: ctx.request.origin,
+			title: config.name
 		});
 	})
-	.get('/:user', users.view)
-	.get('/:user/:repo', repos.view);
+	.get('/:org', orgs.view)
+	.get('/:org/:project', projects.view);
 
 module.exports = router;

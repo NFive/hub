@@ -2,7 +2,5 @@
   "name": "nfivehub",
   "port": 3000,
   "db": "mongodb://localhost/nfivehub",
-  "cacheAge": 86400,
-  "sizeLimit": "2mb",
   "prettyHtml": true
 }
