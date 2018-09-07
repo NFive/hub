@@ -1,9 +1,11 @@
 extends layout
+block head
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
 
 block content
 	h2
-		a(href="/" + plugin.user) #{plugin.user}
-		| /#{plugin.repo}
+		a(href="/" + plugin.org) #{plugin.org}
+		| /#{plugin.project}
 
 	nav.nav.nav-pills.flex-column.flex-sm-row.my-5
 		a.flex-sm-fill.text-sm-center.nav-link.active(href='#') Readme
@@ -16,35 +18,44 @@ block content
 			p README HERE
 		.col-sm-4
 			div
-				h4 install
-				input(value="nfpm install " + plugin.user + "/" + plugin.repo)#install.form-control.w-100.mb-3
-			div
-				h4 downloads
-				p 0
-			div
-				h4 version
-				p
-					a(href=plugin.repo_url + "/releases") 1.0.0
-			div
-				h4 license
-				p
-					a(href="#") #{plugin.license_short}
-			div
-				h4 open issues
-				p
-					a(href=plugin.repo_url + "/issues") 0
-			div
-				h4 pull requests
-				p
-					a(href=plugin.repo_url + "/pulls") 0
-			div
-				h4 homepage
-				p
-					a(href="#") github.com
-			div
-				h4 repository
-				p
-					a(href=plugin.repo_url) github
-			div
-				h4 last publish
-				p today
+				h4 nfpm install command
+				input(value="nfpm install " + plugin.full_name)#install.form-control.w-100.mb-3
+				<button class="btn" data-clipboard-target="#install">
+					<img src="../clippy.svg" alt="Copy to clipboard">
+				</button>
+
+			.row
+				.col-sm-6
+					div
+						h4 Version
+						p
+							a(href=plugin.project_url + "/releases") 1.0.0
+					div
+						h4 Downloads
+						p 0
+					div
+						h4 Homepage
+						p
+							if plugin.homepage_url
+								a(href=plugin.homepage_url) #{plugin.homepage_url}
+							else
+								a(href=plugin.project_url) #{plugin.full_name}
+				.col-sm-6
+					div
+						h4 License
+						p
+							a(href=plugin.license_url) #{plugin.license_short}
+					div
+						h4 Open Issues
+						p
+							a(href=plugin.project_url + "/issues") 0
+					div
+						h4 Repository
+						p
+							a(href=plugin.project_url) github.com
+					div
+						h4 Last Update
+						p today
+
+	block footer
+		- new ClipboardJS('#install');

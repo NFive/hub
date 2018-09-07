@@ -3,7 +3,7 @@ const Plugins = require('../models/plugins');
 
 module.exports = {
 	async view(ctx) {
-		const plugin = await Plugins.findOne({ repo: ctx.params.project });
+		const plugin = await Plugins.findOne({ project: ctx.params.project });
 
 		if (plugin == null) return ctx.throw(404, 'Project not found!');
 

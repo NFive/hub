@@ -10,24 +10,26 @@ const util = require('util');
 
 		for (let i of result.data.items) {
 			try {
-				await Plugins.findOneAndUpdate({gh_id: i.id}, new Plugins({
-					gh_id: i.id,
-					user: i.owner.login,
-					repo: i.name,
+				await Plugins.findOneAndUpdate({gh_id: i.id}, {
+					//gh_id: i.id,
+					org: i.owner.login,
+					project: i.name,
 					full_name: i.full_name,
-					user_url: i.owner.html_url,
+					org_url: i.owner.html_url,
+					project_url: i.html_url,
 					avatar_url: i.owner.avatar_url,
-					repo_url: i.html_url,
+					homepage_url: i.homepage,
 					description: i.discription,
-					plugincreated: i.created_at,
-					pluginupdated: i.updated_at,
+					//readme: i.,
 					license_key: i.license.id,
 					license_name: i.license.name,
 					license_short: i.license.spdx_id,
-					license_url: i.license.html_url
-				}), {
+					license_url: i.license.url, //Needs changing to the repo License, rather than the Github version
+					plugincreated: i.created_at,
+					pluginupdated: i.updated_at
+				}, {
 					upsert: true,
-					new: true
+					new: false
 				});
 			}
 			catch (err) {
