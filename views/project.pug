@@ -21,6 +21,8 @@ block content
 					value="nfpm install " + plugin.full_name,
 					data-clipboard-text="nfpm install " + plugin.full_name,
 					title="Copied to clipboard!"
+					data-trigger="click",
+					data-placement="right"
 					)#install.form-control.w-100.mb-3
 
 			.row
@@ -60,6 +62,4 @@ block footer
 	script.
 		$('#install').tooltip();
 
-		new ClipboardJS('#install').on('success', function(e) {
-			$('#input').tooltip('show');
-		});
+		new ClipboardJS('#install');
