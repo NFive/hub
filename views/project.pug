@@ -1,6 +1,4 @@
 extends layout
-block head
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
 
 block content
 	h2
@@ -19,10 +17,7 @@ block content
 		.col-sm-4
 			div
 				h4 nfpm install command
-				input(value="nfpm install " + plugin.full_name)#install.form-control.w-100.mb-3
-				<button class="btn" data-clipboard-target="#install">
-					<img src="../clippy.svg" alt="Copy to clipboard">
-				</button>
+				input(value="nfpm install " + plugin.full_name, data-clipboard-text="nfpm install " + plugin.full_name)#install.form-control.w-100.mb-3
 
 			.row
 				.col-sm-6
@@ -57,5 +52,6 @@ block content
 						h4 Last Update
 						p today
 
-	block footer
-		- new ClipboardJS('#install');
+block footer
+	script.
+		new ClipboardJS('#install');
