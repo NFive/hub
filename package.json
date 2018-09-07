@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@octokit/rest": "^15.11.1",
-    "clipboard": "^2.0.1",
     "config": "^2.0.1",
     "cron": "^1.4.1",
     "koa": "^2.5.2",

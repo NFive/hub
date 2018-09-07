@@ -17,7 +17,12 @@ block content
 		.col-sm-4
 			div
 				h4 nfpm install command
-				input(value="nfpm install " + plugin.full_name, data-clipboard-text="nfpm install " + plugin.full_name)#install.form-control.w-100.mb-3
+				input(
+					value="nfpm install " + plugin.full_name,
+					data-clipboard-text="nfpm install " + plugin.full_name,
+					data-toggle="tooltip",
+					data-placement="top"
+					)#install.form-control.w-100.mb-3
 
 			.row
 				.col-sm-6
@@ -54,4 +59,8 @@ block content
 
 block footer
 	script.
-		new ClipboardJS('#install');
+		var clipboard = new ClipboardJS('#install');
+
+		clipboard.on('success', function(e) {
+			$('#input').tooltip('show');
+		});
