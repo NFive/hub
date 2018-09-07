@@ -12,6 +12,7 @@ router
 		});
 	})
 	.get('/search', search.view)
+	.get('/search.json', search.json)
 	.get('/:org', orgs.view)
 	.get('/:org/:project', projects.view);
 
