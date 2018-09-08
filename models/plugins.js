@@ -1,36 +1,32 @@
 const mongoose = require('mongoose');
 
 const Release = new mongoose.Schema({
-	tag: String,
-	created: Date,
+	tag: { type: String, required: true },
+	downloads: { type: Number, required: true },
 	notes: String,
-	downloads: Number,
-	readme: String
+	readme: String,
+	created: { type: Date, required: true }
 });
 
 const Repositories = new mongoose.Schema({
-	gh_id: { type: Number, unique: true },
-	org: String,
-	project: String,
+	gh_id: { type: Number, required: true, unique: true },
+	org: { type: String, required: true, index: true },
+	project: { type: String, required: true, index: true },
+	description: { type: String, index: true },
+	license: String,
 	avatar_url: String,
 	homepage_url: String,
-	description: String,
-	releases: [Release],
 	counts: {
 		stars: Number,
 		watchers: Number,
 		forks: Number,
 		issues: Number
 	},
-	license: String,
-	created: Date,
-	scraped: { type: Date, default: Date.now() }
+	releases: [Release],
+	created: { type: Date, required: true },
+	scraped: { type: Date, required: true, default: Date.now() }
 });
 
-Repositories.index({
-	org: 'text',
-	project: 'text',
-	description: 'text'
-});
+Repositories.virtual('name').get(() => this.org + '/' + this.project);
 
 module.exports = mongoose.model('plugins', Repositories);
