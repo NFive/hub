@@ -1,4 +1,5 @@
 const cronjob = require('cron').CronJob;
+const config = require('config');
 const rest = require('@octokit/rest');
 const github = new rest();
 const Plugins = require('../models/plugins');
@@ -9,8 +10,8 @@ const marked = require('marked');
 (async () => {
 	try {
 		github.authenticate({
-			type: 'oauth',
-			token: '1b01a00c5b950b472e444079b7e8363fe57429ab' // Put in config | Yeah just testing if it works, wasn't going to push it.
+			type: config.github.type,
+			token: config.github.token
 		});
 
 		const result = await github.search.repos({ q: 'topic:nfive-plugin' });
