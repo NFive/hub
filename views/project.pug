@@ -13,7 +13,14 @@ block content
 
 	.row
 		.col-sm-8
-			p README HERE
+			.card.mb-3
+				.card-header description
+				.card-body
+					.card-text #{plugin.description}
+			.card
+				.card-header readme
+				.card-body
+					.card-text #{readme}
 		.col-sm-4
 			div
 				h4 install command
@@ -28,35 +35,50 @@ block content
 			.row
 				.col-sm-6
 					div
-						h4 Version
+						h4 version
 						p
 							a(href=plugin.project_url + "/releases") 1.0.0
 					div
-						h4 Downloads
-						p 0
+						h4 stars
+						p #{plugin.counts[0].stars}
 					div
-						h4 Homepage
+						h4 watchers
+						p #{plugin.counts[0].watchers}
+					div
+						h4 updated
+						p
+							time(datetime=updated[1] title=updated[1]) #{updated[0]}
+					div
+						h4 homepage
 						p
 							if plugin.homepage_url
 								a(href=plugin.homepage_url) #{plugin.homepage_url}
 							else
 								a(href=plugin.project_url) #{plugin.full_name}
+
 				.col-sm-6
 					div
-						h4 License
-						p
-							a(href=plugin.license_url) #{plugin.license_short}
+						h4 downloads
+						p #{plugin.releases[0].downloads}
 					div
-						h4 Open Issues
-						p
-							a(href=plugin.project_url + "/issues") 0
+						h4 forks
+						p #{plugin.counts[0].forks}
 					div
-						h4 Repository
+						h4 open Issues
+						p
+							a(href=plugin.project_url + "/issues") #{plugin.counts[0].issues}
+					div
+						h4 license
+						p #{plugin.license}
+					div
+						h4 created
+						p
+							time(datetime=created[1] title=created[1]) #{created[0]}
+					div
+						h4 repository
 						p
 							a(href=plugin.project_url) github.com
-					div
-						h4 Last Update
-						p today
+
 
 block footer
 	script.

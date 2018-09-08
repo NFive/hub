@@ -16,7 +16,7 @@
   ],
   "main": "server.js",
   "scripts": {
-    "watch": "nodemon -L -e js,json",
+    "watch": "nodemon -L -e js,json,pug",
     "lint": "eslint . && pug-lint ./views"
   },
   "dependencies": {
@@ -30,7 +30,10 @@
     "koa-static-cache": "^5.1.1",
     "koa-views": "^6.1.4",
     "lodash": "^4.17.10",
+    "marked": "^0.5.0",
+    "moment": "^2.22.2",
     "mongoose": "^5.2.13",
+    "node-fetch": "^2.2.0",
     "pug": "^2.0.0-rc.2"
   },
   "devDependencies": {

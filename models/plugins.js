@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 
-const Plugins = new mongoose.Schema({
-	gh_id: { type: Number, unique: true},
+const Releases = new mongoose.Schema({ tag: String, created: String, notes: String, downloads: Number, readme: String });
+const Counts = new mongoose.Schema({ stars: Number, watchers: Number, forks: Number, issues: Number, })
+const Repositories = new mongoose.Schema({
+	gh_id: { type: Number, unique: true },
 	org: String,               	//owner.login
 	project: String,          	//name
 	full_name: String,        	//full_name
@@ -10,26 +12,18 @@ const Plugins = new mongoose.Schema({
 	avatar_url: String,       	//owner.avatar_url
 	homepage_url: String,		//homepage
 	description: String,      	//discription
-	readme: String,				//
-	version: String,			//releases.id.version
-	downloadcount: Number,		//
-	license_key: String,      	//license.id
-	license_name: String,    	//license.name
-	license_short: String,    	//license.spdx_id
-	license_url: String,      	//license.html
-	plugincreated: Date,       	//created_at
-	pluginupdated: Date,       	//updated_at
-	last_grab: { type: Date, default: Date.now()}
-},
-{
-	timestamps: true
-});
+	releases: [Releases],
+	counts: [Counts],
+	license: String,			//license.key
+	creationdate: Date,       	//created_at
+	last_grab: { type: Date, default: Date.now() }
+},{	timestamps: false });
 
-Plugins.index({
+Repositories.index({
 	org: 'text',
 	project: 'text',
 	full_name: 'text',
 	description: 'text'
 });
 
-module.exports = mongoose.model('plugins', Plugins);
+module.exports = mongoose.model('plugins', Repositories);
