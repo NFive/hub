@@ -5,7 +5,7 @@ const orgs = require('./controllers/orgs');
 const projects = require('./controllers/projects');
 
 router
-	.get('/', async (ctx) => {
+	.get('/', async ctx => {
 		await ctx.render('index', {
 			pretty: config.prettyHtml,
 			title: config.name

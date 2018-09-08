@@ -2,10 +2,6 @@ body {
 	font-family: 'Open Sans', sans-serif;
 }
 
-header {
-	height: 5rem;
-}
-
 header .container {
 	max-width: 1540px;
 }

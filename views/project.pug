@@ -5,6 +5,8 @@ block content
 		a(href="/" + plugin.org) #{plugin.org}
 		| /#{plugin.project}
 
+	p.lead= plugin.description
+
 	nav.nav.nav-pills.flex-column.flex-sm-row.my-5
 		a.flex-sm-fill.text-sm-center.nav-link.active(href='#') Readme
 		a.flex-sm-fill.text-sm-center.nav-link(href='#') 2 Versions
@@ -14,21 +16,23 @@ block content
 	.row
 		.col-sm-8
 			.card.mb-3
-				.card-header description
+				.card-header release notes
 				.card-body
-					.card-text #{plugin.description}
+					.card-text
+						!= plugin.releases[0].notes
 			.card
 				.card-header readme
 				.card-body
-					.card-text #{readme}
+					.card-text
+						!= plugin.releases[0].readme
 		.col-sm-4
 			div
-				h4 install command
+				h4 install
 				input(
-					value="nfpm install " + plugin.full_name,
-					data-clipboard-text="nfpm install " + plugin.full_name,
+					value="nfpm install " + plugin.org + "/" + plugin.project
+					data-clipboard-text="nfpm install " + plugin.org + "/" + plugin.project
 					title="Copied to clipboard!"
-					data-trigger="click",
+					data-trigger="click"
 					data-placement="right"
 					)#install.form-control.w-100.mb-3
 
@@ -37,24 +41,28 @@ block content
 					div
 						h4 version
 						p
-							a(href=plugin.project_url + "/releases") 1.0.0
+							a(href="https://github.com/" + plugin.org + "/" + plugin.project + "/releases/tag/" + plugin.releases[0].tag) #{plugin.releases[0].tag}
 					div
 						h4 stars
-						p #{plugin.counts[0].stars}
+						p
+							a(href="https://github.com/" + plugin.org + "/" + plugin.project + "/stargazers") #{plugin.counts.stars}
 					div
 						h4 watchers
-						p #{plugin.counts[0].watchers}
+						p
+							a(href="https://github.com/" + plugin.org + "/" + plugin.project + "/watchers") #{plugin.counts.watchers}
 					div
 						h4 updated
 						p
 							time(datetime=updated[1] title=updated[1]) #{updated[0]}
 					div
-						h4 homepage
+						h4 repository
 						p
-							if plugin.homepage_url
+							a(href="https://github.com/" + plugin.org + "/" + plugin.project) github.com
+					if plugin.homepage_url
+						div
+							h4 homepage
+							p
 								a(href=plugin.homepage_url) #{plugin.homepage_url}
-							else
-								a(href=plugin.project_url) #{plugin.full_name}
 
 				.col-sm-6
 					div
@@ -62,11 +70,12 @@ block content
 						p #{plugin.releases[0].downloads}
 					div
 						h4 forks
-						p #{plugin.counts[0].forks}
-					div
-						h4 open Issues
 						p
-							a(href=plugin.project_url + "/issues") #{plugin.counts[0].issues}
+							a(href="https://github.com/" + plugin.org + "/" + plugin.project + "/network/members") #{plugin.counts.forks}
+					div
+						h4 open issues
+						p
+							a(href="https://github.com/" + plugin.org + "/" + plugin.project + "/issues") #{plugin.counts.issues}
 					div
 						h4 license
 						p #{plugin.license}
@@ -74,11 +83,6 @@ block content
 						h4 created
 						p
 							time(datetime=created[1] title=created[1]) #{created[0]}
-					div
-						h4 repository
-						p
-							a(href=plugin.project_url) github.com
-
 
 block footer
 	script.
