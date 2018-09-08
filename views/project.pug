@@ -29,8 +29,8 @@ block content
 			div
 				h4 install
 				input(
-					value="nfpm install " + plugin.org + "/" + plugin.project
-					data-clipboard-text="nfpm install " + plugin.org + "/" + plugin.project
+					value="nfpm install " + plugin.name
+					data-clipboard-text="nfpm install " + plugin.name
 					title="Copied to clipboard!"
 					data-trigger="click"
 					data-placement="right"
@@ -41,15 +41,15 @@ block content
 					div
 						h4 version
 						p
-							a(href="https://github.com/" + plugin.org + "/" + plugin.project + "/releases/tag/" + plugin.releases[0].tag) #{plugin.releases[0].tag}
+							a(href=plugin.gh_url + "/releases/tag/" + plugin.releases[0].tag) #{plugin.releases[0].tag}
 					div
 						h4 stars
 						p
-							a(href="https://github.com/" + plugin.org + "/" + plugin.project + "/stargazers") #{plugin.counts.stars}
+							a(href=plugin.gh_url + "/stargazers") #{plugin.counts.stars}
 					div
 						h4 watchers
 						p
-							a(href="https://github.com/" + plugin.org + "/" + plugin.project + "/watchers") #{plugin.counts.watchers}
+							a(href=plugin.gh_url + "/watchers") #{plugin.counts.watchers}
 					div
 						h4 updated
 						p
@@ -57,7 +57,7 @@ block content
 					div
 						h4 repository
 						p
-							a(href="https://github.com/" + plugin.org + "/" + plugin.project) github.com
+							a(href=plugin.gh_url) github.com
 					if plugin.homepage_url
 						div
 							h4 homepage
@@ -71,11 +71,11 @@ block content
 					div
 						h4 forks
 						p
-							a(href="https://github.com/" + plugin.org + "/" + plugin.project + "/network/members") #{plugin.counts.forks}
+							a(href=plugin.gh_url + "/network/members") #{plugin.counts.forks}
 					div
 						h4 open issues
 						p
-							a(href="https://github.com/" + plugin.org + "/" + plugin.project + "/issues") #{plugin.counts.issues}
+							a(href=plugin.gh_url + "/issues") #{plugin.counts.issues}
 					div
 						h4 license
 						p #{plugin.license}

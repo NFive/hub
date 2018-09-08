@@ -27,6 +27,12 @@ const Repositories = new mongoose.Schema({
 	scraped: { type: Date, required: true, default: Date.now() }
 });
 
-Repositories.virtual('name').get(() => this.org + '/' + this.project);
+Repositories.virtual('name').get(function () {
+	return this.org + '/' + this.project;
+});
+
+Repositories.virtual('gh_url').get(function () {
+	return 'https://github.com/' + this.name;
+});
 
 module.exports = mongoose.model('plugins', Repositories);
