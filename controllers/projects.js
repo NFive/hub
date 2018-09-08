@@ -24,7 +24,8 @@ module.exports = {
 			created: created,
 			updated: updated,
 			readme: plugin.releases[0].readme,
-			plugin: plugin
+			plugin: plugin,
+			tab: 'readme'
 		});
 	}
 };

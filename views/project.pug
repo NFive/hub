@@ -9,22 +9,21 @@ block content
 
 	nav.nav.nav-pills.flex-column.flex-sm-row.my-5
 		a.flex-sm-fill.text-sm-center.nav-link.active(href='#') Readme
-		a.flex-sm-fill.text-sm-center.nav-link(href='#') 2 Versions
+		a.flex-sm-fill.text-sm-center.nav-link(href='#') 0 Versions
 		a.flex-sm-fill.text-sm-center.nav-link(href='#') 0 Dependencies
 		a.flex-sm-fill.text-sm-center.nav-link(href='#') 0 Dependents
 
 	.row
 		.col-sm-8
-			.card.mb-3
-				.card-header release notes
-				.card-body
-					.card-text
-						!= plugin.releases[0].notes
-			.card
-				.card-header readme
-				.card-body
-					.card-text
-						!= plugin.releases[0].readme
+			if tab == "versions"
+				include project-versions
+			else if tab == "dependencies"
+				include project-dependencies
+			else if tab == "dependents"
+				include project-dependents
+			else
+				include project-readme
+
 		.col-sm-4
 			div
 				h4 install
