@@ -5,6 +5,24 @@ block content
 
 	hr
 
-	each plugin in results
-		a(href="/" +  plugin.name) #{plugin.name}
-		hr
+	.row
+		each plugin in results
+			.col-sm-8
+				div
+					a(href="/" +  plugin.name) #{plugin.name}
+			.col-sm-1.text-center
+				div
+					a(href=plugin.gh_url + "/releases/tag/" + plugin.releases[0].tag) #{plugin.releases[0].tag}
+					p version
+			.col-sm-1.text-center
+				div
+					a(href=plugin.gh_url + "/stargazers") #{plugin.counts.stars}
+					p stars
+			.col-sm-1.text-center
+				div
+					a(href=plugin.gh_url + "/watchers") #{plugin.counts.watchers}
+					p watchers
+			.col-sm-1.text-center
+				div
+					a(href="/" +  plugin.name) #{plugin.downloads}
+					p pulls

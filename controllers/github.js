@@ -33,6 +33,12 @@ const marked = require('marked');
 					};
 				}));
 
+				if (releases && releases.length) {
+					readme = await github.repos.getReadme({ owner: i.owner.login, repo: i.name});
+					readme = await fetch(readme.data.download_url);
+					readme = marked(await readme.text());
+				}
+
 				await Plugins.findOneAndUpdate({ gh_id: i.id }, {
 					gh_id: i.id,
 					org: i.owner.login,
@@ -40,13 +46,14 @@ const marked = require('marked');
 					avatar_url: i.owner.avatar_url,
 					homepage_url: i.homepage,
 					description: i.description,
-					releases: releases,
 					counts: {
 						stars: i.stargazers_count,
 						watchers: i.watchers_count,
 						forks: i.forks_count,
 						issues: i.open_issues_count
 					},
+					releases: releases,
+					readme: readme,
 					license: i.license.key,
 					created: i.created_at
 				}, {

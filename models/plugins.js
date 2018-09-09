@@ -24,6 +24,7 @@ const Repositories = new mongoose.Schema({
 		issues: Number
 	},
 	releases: [Release],
+	readme: String,
 	created: { type: Date, required: true },
 	scraped: { type: Date, required: true, default: Date.now() }
 });
@@ -36,8 +37,20 @@ Repositories.virtual('gh_url').get(function () {
 	return 'https://github.com/' + this.name;
 });
 
-Repositories.virtual('has_releases').get(function () {
+Repositories.virtual('has_release').get(function () {
     return this.releases && this.releases.length;
+});
+
+Repositories.virtual('has_readme').get(function () {
+	if (has_releases) {
+		return this.releases.readme == null;
+	} else { return false }
+});
+
+Repositories.virtual('has_notes').get(function () {
+	if (has_releases) {
+		return this.releases.notes == null;
+	} else { return false }
 });
 
 Repositories.virtual('downloads').get(function () {

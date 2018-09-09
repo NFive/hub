@@ -13,7 +13,7 @@ module.exports = {
 	},
 
 	async json(ctx) {
-		ctx.body = lodash.map(await module.exports.search(ctx.query.q), r => lodash.pick(r, ['org', 'project', 'counts', 'downloads']));
+		ctx.body = lodash.map(await module.exports.search(ctx.query.q), r => lodash.pick(r, ['org', 'project', 'releases[0].tag', 'counts', 'downloads']));
 	},
 
 	async search(query) {
@@ -31,6 +31,6 @@ module.exports = {
 				$meta: 'textScore'
 			}
 		})
-		).filter(r => r.has_releases)
+		).filter(r => r.has_release)
 	}
 };
