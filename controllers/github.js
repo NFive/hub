@@ -26,10 +26,10 @@ const marked = require('marked');
 
 					return {
 						tag: r.tag_name,
-						created: r.published_at,
-						notes: marked(r.body),
 						downloads: r.assets[0].download_count,
-						readme: marked(await readme.text())
+						notes: marked(r.body),
+						readme: marked(await readme.text()),
+						created: r.published_at
 					};
 				}));
 
@@ -53,12 +53,12 @@ const marked = require('marked');
 					upsert: true,
 					setDefaultsOnInsert: true
 				});
+				util.log('id: %s | %s has been saved', i.id, i.name);
+
 			}
 			catch (err) {
 				util.log('Error: %s', err);
 			}
-
-			util.log('id: %s | %s has been saved', i.id, i.name);
 		}
 	}
 	catch (err) {

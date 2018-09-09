@@ -1,5 +1,5 @@
 const config = require('config');
-const _ = require('lodash');
+const lodash = require('lodash');
 const Plugins = require('../models/plugins');
 
 module.exports = {
@@ -13,11 +13,11 @@ module.exports = {
 	},
 
 	async json(ctx) {
-		ctx.body = _.map(await module.exports.search(ctx.query.q), r => _.pick(r, ['user', 'repo', 'license_short']));
+		ctx.body = lodash.map(await module.exports.search(ctx.query.q), r => lodash.pick(r, ['org', 'project', 'counts', 'downloads']));
 	},
 
 	async search(query) {
-		return await Plugins.find({
+		return (await Plugins.find({
 			$text: {
 				$search: query
 			}
@@ -30,6 +30,7 @@ module.exports = {
 			score: {
 				$meta: 'textScore'
 			}
-		});
+		})
+		).filter(r => r.has_releases)
 	}
 };

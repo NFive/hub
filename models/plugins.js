@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const lodash = require('lodash');
 
 const Release = new mongoose.Schema({
 	tag: { type: String, required: true },
@@ -33,6 +34,20 @@ Repositories.virtual('name').get(function () {
 
 Repositories.virtual('gh_url').get(function () {
 	return 'https://github.com/' + this.name;
+});
+
+Repositories.virtual('has_releases').get(function () {
+    return this.releases && this.releases.length;
+});
+
+Repositories.virtual('downloads').get(function () {
+	return lodash.sumBy(this.releases, (o) => o.downloads);
+});
+
+Repositories.index({
+	org: 'text',
+	project: 'text',
+	description: 'text'
 });
 
 module.exports = mongoose.model('plugins', Repositories);
