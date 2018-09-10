@@ -18,4 +18,5 @@ app.use(require('koa-views')(__dirname + '/views', {
 }));
 
 app.use(router.routes(), router.allowedMethods());
+
 module.exports = app;

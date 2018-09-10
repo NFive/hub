@@ -38,19 +38,15 @@ Repositories.virtual('gh_url').get(function () {
 });
 
 Repositories.virtual('has_release').get(function () {
-    return this.releases && this.releases.length;
+	return this.releases && this.releases.length;
 });
 
 Repositories.virtual('has_readme').get(function () {
-	if (has_releases) {
-		return this.releases.readme == null;
-	} else { return false }
+	return this.has_releases && this.releases.readme == null;
 });
 
 Repositories.virtual('has_notes').get(function () {
-	if (has_releases) {
-		return this.releases.notes == null;
-	} else { return false }
+	return this.has_releases && this.releases.notes == null;
 });
 
 Repositories.virtual('downloads').get(function () {

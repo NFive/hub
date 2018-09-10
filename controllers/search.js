@@ -13,24 +13,33 @@ module.exports = {
 	},
 
 	async json(ctx) {
-		ctx.body = lodash.map(await module.exports.search(ctx.query.q), r => lodash.pick(r, ['org', 'project', 'releases[0].tag', 'counts', 'downloads']));
+		ctx.body = lodash.map(await module.exports.search(ctx.query.q), r =>
+			lodash.pick(r, [
+				'org',
+				'project',
+				'releases[0].tag',
+				'counts',
+				'downloads'
+			])
+		);
 	},
 
 	async search(query) {
-		return (await Plugins.find({
-			$text: {
-				$search: query
+		return (await Plugins.find(
+			{
+				$text: {
+					$search: query
+				}
+			},
+			{
+				score: {
+					$meta: 'textScore'
+				}
 			}
-		},
-		{
+		).sort({
 			score: {
 				$meta: 'textScore'
 			}
-		}).sort({
-			score: {
-				$meta: 'textScore'
-			}
-		})
-		).filter(r => r.has_release)
+		})).filter(r => r.has_release);
 	}
 };

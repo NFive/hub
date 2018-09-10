@@ -17,11 +17,13 @@ const marked = require('marked');
 		const result = await github.search.repos({ q: 'topic:nfive-plugin' });
 
 		for (let i of result.data.items) {
+			let readme;
+
 			try {
 				let releases = await github.repos.getReleases({ owner: i.owner.login, repo: i.name, per_page: '100', page: '1' });
 				releases = releases.data.filter(r => !r.draft && !r.prerelease);
 				releases = await Promise.all(releases.map(async r => {
-					let readme = await github.repos.getReadme({ owner: i.owner.login, repo: i.name, ref: r.tag_name });
+					readme = await github.repos.getReadme({ owner: i.owner.login, repo: i.name, ref: r.tag_name });
 					readme = await fetch(readme.data.download_url);
 
 					return {

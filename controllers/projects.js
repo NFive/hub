@@ -18,8 +18,10 @@ module.exports = {
 
 		if (release == null) return ctx.throw(404, plugin.name + ' version ' + version + ' not found!');
 
-		let created = [ "No Release" ]
-		let updated = [ "No Release" ]
+		let created = [ 'No Release' ];
+		let updated = [ 'No Release' ];
+
+		let readme = plugin.readme;
 
 		if (plugin.has_release) {
 			created = [
@@ -32,9 +34,7 @@ module.exports = {
 				moment(release.created).format('YYYY-MM-DD')
 			];
 
-			readme = release.readme
-		} else {
-			readme = plugin.readme
+			readme = release.readme;
 		}
 
 		return await ctx.render('project', {
