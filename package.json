@@ -32,7 +32,7 @@
     "lodash": "^4.17.10",
     "marked": "^0.5.0",
     "moment": "^2.22.2",
-    "mongoose": "^5.2.13",
+    "mongoose": "^5.2.14",
     "node-fetch": "^2.2.0",
     "pug": "^2.0.0-rc.2"
   },
