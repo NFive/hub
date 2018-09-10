@@ -1,14 +1,13 @@
 extends layout
 
 block content
-	h2.mb-5 "#{query}" - #{results.length} results
-
+	h2.mb-5 #{results.length} plugins found
 	hr
 
-	.row
-		each plugin in results
+	each plugin in results
+		.row
 			.col-sm-8
-				div
+				div.align-middle
 					a(href="/" +  plugin.name) #{plugin.name}
 			.col-sm-1.text-center
 				div
@@ -25,4 +24,4 @@ block content
 			.col-sm-1.text-center
 				div
 					a(href="/" +  plugin.name) #{plugin.downloads}
-					p pulls
+					p installs

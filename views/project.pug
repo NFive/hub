@@ -15,14 +15,7 @@ block content
 
 	.row
 		.col-sm-8
-			if tab == "versions"
-				include project-versions
-			else if tab == "dependencies"
-				include project-dependencies
-			else if tab == "dependents"
-				include project-dependents
-			else
-				include project-readme
+			include project-readme
 
 		.col-sm-4
 			div
@@ -41,7 +34,7 @@ block content
 						h4 version
 						p
 							if plugin.has_release
-								a(href=plugin.gh_url + "/releases/tag/" + plugin.releases[0].tag) #{plugin.releases[0].tag}
+								a(href=plugin.gh_url + "/releases/tag/" + release.tag) #{release.tag}
 							else
 								p No Release
 					div
@@ -91,7 +84,6 @@ block content
 					div
 						h4 license
 						p #{plugin.license}
-
 
 block footer
 	script.

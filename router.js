@@ -14,6 +14,7 @@ router
 	.get('/search', search.view)
 	.get('/search.json', search.json)
 	.get('/:org', orgs.view)
-	.get('/:org/:project', projects.view);
+	.get('/:org/:project', projects.view)
+	.get('/:org/:project/:version', projects.view);
 
 module.exports = router;
