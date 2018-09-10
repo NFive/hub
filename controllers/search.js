@@ -17,6 +17,7 @@ module.exports = {
 			lodash.pick(r, [
 				'org',
 				'project',
+				'name',
 				'releases[0].tag',
 				'counts',
 				'downloads'

@@ -19,7 +19,7 @@ header h1 a img {
 	width: 4rem;
 }
 
-header form input#search {
+header form {
 	margin-top: 1.25rem;
 	font-family: 'Courier New', Courier, monospace;
 }
