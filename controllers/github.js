@@ -7,7 +7,7 @@ const util = require('util');
 const fetch = require('node-fetch');
 const marked = require('marked');
 
-(async () => {
+const update = async () => {
 	try {
 		github.authenticate({
 			type: config.github.type,
@@ -69,16 +69,30 @@ const marked = require('marked');
 				util.log('Error: %s', err);
 			}
 		}
+
+	} catch (err) {
+		util.log('Update Error: %s', err);
 	}
-	catch (err) {
-		util.log('Error: %s', err);
+};
+
+const cleanup = async () => {
+	try{
+		const cutoff = new Date();
+		await Plugins.deleteMany({
+			scraped: {$lte: cutoff.setDate(cutoff.getDate()-5)}
+		});
+	} catch (err) {
+		util.log('Cleanup Error: %s', err);
 	}
-})();
+};
 
 new cronjob({
 	cronTime: '0 * * * *',
 	onTick: function () {
-
+		console.log(Date.now() + "Starting Database Update....")
+		update();
+		cleanup();
+		console.log(Date.now() + "Database Update Completed")
 	},
 	start: true,
 	timeZone: 'Europe/London'
