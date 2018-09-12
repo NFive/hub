@@ -2,7 +2,7 @@ extends layout
 
 block content
 	h2
-		a(href="/" + plugin.org) #{plugin.org}
+		a(href='/' + plugin.org) #{plugin.org}
 		| /#{plugin.project}
 
 	p.lead= plugin.description
@@ -13,7 +13,6 @@ block content
 			a#nav-versions-tab.nav-item.nav-link.flex-sm-fill.text-sm-center(data-toggle='tab', href='#nav-versions', role='tab', aria-controls='nav-versions', aria-selected='false') #{plugin.releases.length} Versions
 			a#nav-dependencies-tab.nav-item.nav-link.flex-sm-fill.text-sm-center(data-toggle='tab', href='#nav-dependencies', role='tab', aria-controls='nav-dependencies', aria-selected='false') Dependencies
 			a#nav-dependents-tab.nav-item.nav-link.flex-sm-fill.text-sm-center(data-toggle='tab', href='#nav-dependents', role='tab', aria-controls='nav-dependents', aria-selected='false') Dependents
-
 
 	.row
 		.col-sm-8
@@ -31,12 +30,12 @@ block content
 			div
 				h4 install
 				input(
-					value="nfpm install " + plugin.name
-					data-clipboard-text="nfpm install " + plugin.name
-					title="Copied to clipboard!"
-					data-trigger="click"
-					data-placement="right"
-					)#install.form-control.w-100.mb-3
+					value='nfpm install ' + plugin.name
+					data-clipboard-text='nfpm install ' + plugin.name
+					title='Copied to clipboard!'
+					data-trigger='click'
+					data-placement='right'
+				)#install.form-control.w-100.mb-3
 
 			.row
 				.col-sm-6
@@ -44,24 +43,24 @@ block content
 						h4 latest version
 						p
 							if plugin.has_release
-								a(href=plugin.gh_url + "/releases/tag/" + release.tag) #{release.tag}
+								a(href=plugin.gh_url + '/releases/tag/' + release.tag) #{release.tag}
 							else
 								p No Release
 					div
 						h4 stars
 						p
-							a(href=plugin.gh_url + "/stargazers") #{plugin.counts.stars}
+							a(href=plugin.gh_url + '/stargazers') #{plugin.counts.stars}
 					div
 						h4 watchers
 						p
-							a(href=plugin.gh_url + "/watchers") #{plugin.counts.watchers}
+							a(href=plugin.gh_url + '/watchers') #{plugin.counts.watchers}
 					div
 						h4 updated
 						if plugin.has_release
 							p
-								time(datetime=updated[1] title=updated[1]) #{updated[0]}
+								time(datetime=moment(release.created).format('YYYY-MM-DD') title=moment(release.created).format('YYYY-MM-DD')) #{moment(release.created).fromNow()}
 						else
-							p #{updated[0]}
+							p moment(release.created).fromNow()
 					div
 						h4 repository
 						p
@@ -79,18 +78,18 @@ block content
 					div
 						h4 forks
 						p
-							a(href=plugin.gh_url + "/network/members") #{plugin.counts.forks}
+							a(href=plugin.gh_url + '/network/members') #{plugin.counts.forks}
 					div
 						h4 open issues
 						p
-							a(href=plugin.gh_url + "/issues") #{plugin.counts.issues}
+							a(href=plugin.gh_url + '/issues') #{plugin.counts.issues}
 					div
 						h4 created
 						if plugin.has_release
 							p
-								time(datetime=created[1] title=created[1]) #{created[0]}
+								time(datetime=moment(plugin.created).format('YYYY-MM-DD') title=moment(plugin.created).format('YYYY-MM-DD')) #{moment(plugin.created).fromNow()}
 						else
-							p #{created[0]}
+							p moment(plugin.created).fromNow()
 					div
 						h4 license
 						p #{plugin.license}

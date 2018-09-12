@@ -18,33 +18,15 @@ module.exports = {
 
 		if (release == null) return ctx.throw(404, plugin.name + ' version ' + version + ' not found!');
 
-		let created = [ 'No Release' ];
-		let updated = [ 'No Release' ];
-
-		let readme = plugin.readme;
-
-		if (plugin.has_release) {
-			created = [
-				moment(plugin.created).fromNow(),
-				moment(plugin.created).format('YYYY-MM-DD')
-			];
-
-			updated = [
-				moment(release.created).fromNow(),
-				moment(release.created).format('YYYY-MM-DD')
-			];
-
-			readme = release.readme;
-		}
+		const readme = plugin.has_release ? release.readme : plugin.readme;
 
 		return await ctx.render('project', {
 			pretty: config.prettyHtml,
-			title: config.name,
-			created: created,
-			updated: updated,
+			title: plugin.name + config.name,
 			readme: readme,
 			plugin: plugin,
-			release: release
+			release: release,
+			moment: moment
 		});
 	}
 };
