@@ -1,3 +1,9 @@
-.card.mb-3
-	.card-header versions
-	.card-body versions
+each release in plugin.releases
+	.list-group
+			a.list-group-item.list-group-item-action.flex-column.align-items-start(href="")
+				.d-flex.w-100.justify-content-between
+					h5.mb-1 #{release.tag}
+					small #{release.created}
+					//Needs adjusting to say "X days ago" rather than the full date
+				p.mb-1
+					!= release.notes

@@ -89,10 +89,10 @@ const cleanup = async () => {
 new cronjob({
 	cronTime: '0 * * * *',
 	onTick: function () {
-		console.log(Date.now() + "Starting Database Update....")
+		console.log(Date.now() + " | Starting Database Update....")
 		update();
 		cleanup();
-		console.log(Date.now() + "Database Update Completed")
+		console.log(Date.now() + " | Database Update Completed")
 	},
 	start: true,
 	timeZone: 'Europe/London'
