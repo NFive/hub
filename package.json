@@ -23,6 +23,7 @@
     "@octokit/rest": "^15.11.2",
     "config": "^2.0.1",
     "cron": "^1.4.1",
+    "dompurify": "^1.0.8",
     "koa": "^2.5.3",
     "koa-compress": "^3.0.0",
     "koa-logger": "^3.0.1",
