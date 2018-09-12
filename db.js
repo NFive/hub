@@ -10,7 +10,7 @@ module.exports = () => {
 
 	mongoose.set('useCreateIndex', true);
 	mongoose.set('useFindAndModify', false);
-	mongoose.set('debug', true);
+	//mongoose.set('debug', true);
 
 	mongoose.connect(config.db, { useNewUrlParser: true });
 

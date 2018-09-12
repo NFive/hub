@@ -22,10 +22,12 @@ html(lang='en')
 									img(src="/logo.svg")
 
 						.col-lg-11
-							form(action="/search").form-inline
-								label(for="search").sr-only Search
-								input(name="q" placeholder="Search plugins")#search.form-control.w-100
-								input(type="submit" style="position: absolute; left: -9999px")
+							form(action="/search")
+								.input-group.mb-3
+									input.form-control(name="q" placeholder='Search Plugins' type='text')
+									.input-group-append
+										button.btn.btn-outline-secondary(type='submit') Search
+
 
 			.container
 				block content
