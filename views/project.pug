@@ -1,96 +1,115 @@
 extends layout
 
 block content
-	h2
-		a(href='/' + plugin.org) #{plugin.org}
-		| /#{plugin.project}
+	div#install-container.float-right.b
+		code(
+				data-clipboard-text='nfpm install ' + plugin.name
+				title='Copied to clipboard!'
+				data-trigger='click'
+				data-placement='top'
+			)#install.border.rounded.m-3
+				| nfpm install #{plugin.name}
+				|
+				:icon clippy
 
-	p.lead= plugin.description
+	header
+		a(href='/' + plugin.org).float-left
+			img(src=plugin.avatar_url width='100px' height='100px').mr-3
 
-	nav
-		#nav-tab.nav.nav-pills.flex-column.flex-sm-row.my-5(role='tablist')
-			a#nav-readme-tab.nav-item.nav-link.flex-sm-fill.text-sm-center.active(data-toggle='tab', href='#nav-readme', role='tab', aria-controls='nav-readme', aria-selected='true') Readme
-			a#nav-versions-tab.nav-item.nav-link.flex-sm-fill.text-sm-center(data-toggle='tab', href='#nav-versions', role='tab', aria-controls='nav-versions', aria-selected='false') #{plugin.releases.length} Versions
-			a#nav-dependencies-tab.nav-item.nav-link.flex-sm-fill.text-sm-center(data-toggle='tab', href='#nav-dependencies', role='tab', aria-controls='nav-dependencies', aria-selected='false') Dependencies
-			a#nav-dependents-tab.nav-item.nav-link.flex-sm-fill.text-sm-center(data-toggle='tab', href='#nav-dependents', role='tab', aria-controls='nav-dependents', aria-selected='false') Dependents
+		h2.pt-2
+			a(href='/' + plugin.org) #{plugin.org}
+			| /#{plugin.project}
 
-	.row
+		p.lead= plugin.description
+
+
+	nav.mt-5.mb-4
+		#nav-tab.nav.nav-tabs.flex-column.flex-sm-row(role='tablist')
+			a#readme-tab.nav-item.nav-link.flex-sm-fill.text-sm-center.active(data-toggle='tab', href='#readme', role='tab', aria-controls='readme', aria-selected='true') Readme
+			a#versions-tab.nav-item.nav-link.flex-sm-fill.text-sm-center(data-toggle='tab', href='#versions', role='tab', aria-controls='versions', aria-selected='false') #{plugin.releases.length.toLocaleString()} Versions
+			a#dependencies-tab.nav-item.nav-link.flex-sm-fill.text-sm-center(data-toggle='tab', href='#dependencies', role='tab', aria-controls='dependencies', aria-selected='false') Dependencies
+			a#dependents-tab.nav-item.nav-link.flex-sm-fill.text-sm-center(data-toggle='tab', href='#dependents', role='tab', aria-controls='dependents', aria-selected='false') Dependents
+
+	#tab.row
 		.col-sm-8
 			#nav-tabContent.tab-content
-				#nav-readme.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='nav-readme-tab')
-					include project-readme
-				#nav-versions.tab-pane.fade(role='tabpanel', aria-labelledby='nav-versions-tab')
+				#readme.markdown.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='readme-tab')
+					!= readme
+				#versions.tab-pane.fade(role='tabpanel', aria-labelledby='versions-tab')
 					include project-versions
-				#nav-dependencies.tab-pane.fade(role='tabpanel', aria-labelledby='nav-dependencies-tab')
-					include project-dependencies
-				#nav-dependents.tab-pane.fade(role='tabpanel', aria-labelledby='nav-dependents-tab')
-					include project-dependents
+				#dependencies.tab-pane.fade(role='tabpanel', aria-labelledby='dependencies-tab')
+					h2.text-center Coming soon
+				#dependents.tab-pane.fade(role='tabpanel', aria-labelledby='dependents-tab')
+					h2.text-center Coming soon
 
-		.col-sm-4
-			div
-				h4 install
-				input(
-					value='nfpm install ' + plugin.name
-					data-clipboard-text='nfpm install ' + plugin.name
-					title='Copied to clipboard!'
-					data-trigger='click'
-					data-placement='right'
-				)#install.form-control.w-100.mb-3
+		#stats.col-sm-4
+			.row.text-center.mb-3
+				.col-sm-3
+					a(href=plugin.gh_url + '/stargazers')
+						:icon(size=24) star
+						|
+						| #{plugin.counts.stars.toLocaleString()}
+				.col-sm-3
+					a(href=plugin.gh_url + '/watchers')
+						:icon(size=20) eye
+						|
+						| #{plugin.counts.watchers.toLocaleString()}
+				.col-sm-3
+					a(href=plugin.gh_url + '/network/members')
+						:icon(size=20) repo-forked
+						|
+						| #{plugin.counts.forks.toLocaleString()}
+				.col-sm-3
+					a(href=plugin.gh_url + '/issues')
+						:icon(size=20) issue-opened
+						|
+						| #{plugin.counts.issues.toLocaleString()}
 
 			.row
 				.col-sm-6
-					div
-						h4 latest version
+					div.my-3
+						h4 version
 						p
 							if plugin.has_release
-								a(href=plugin.gh_url + '/releases/tag/' + release.tag) #{release.tag}
+
+								a(href=plugin.gh_url + '/releases/tag/' + release.tag)
+									:icon tag
+									|
+									| #{release.tag}
 							else
-								p No Release
-					div
-						h4 stars
-						p
-							a(href=plugin.gh_url + '/stargazers') #{plugin.counts.stars}
-					div
-						h4 watchers
-						p
-							a(href=plugin.gh_url + '/watchers') #{plugin.counts.watchers}
-					div
-						h4 updated
+								p Unreleased
+					div.my-3
+						h4 released
 						if plugin.has_release
 							p
+								:icon clock
+								|
 								time(datetime=moment(release.created).format('YYYY-MM-DD') title=moment(release.created).format('YYYY-MM-DD')) #{moment(release.created).fromNow()}
 						else
-							p moment(release.created).fromNow()
-					div
-						h4 repository
-						p
-							a(href=plugin.gh_url) github.com
+							p Unreleased
 					if plugin.homepage_url
-						div
+						div.my-3
 							h4 homepage
 							p
-								a(href=plugin.homepage_url) #{plugin.homepage_url}
+								:icon globe
+								|
+								a(href=plugin.homepage_url) #{new URL(plugin.homepage_url).hostname}
 
 				.col-sm-6
-					div
+					div.my-3
 						h4 downloads
-						p #{plugin.downloads}
-					div
-						h4 forks
 						p
-							a(href=plugin.gh_url + '/network/members') #{plugin.counts.forks}
-					div
-						h4 open issues
-						p
-							a(href=plugin.gh_url + '/issues') #{plugin.counts.issues}
-					div
+							:icon cloud-download
+							|
+							| #{release.downloads.toLocaleString()}
+					div.my-3
 						h4 created
 						if plugin.has_release
 							p
 								time(datetime=moment(plugin.created).format('YYYY-MM-DD') title=moment(plugin.created).format('YYYY-MM-DD')) #{moment(plugin.created).fromNow()}
 						else
 							p moment(plugin.created).fromNow()
-					div
+					div.my-3
 						h4 license
 						p #{plugin.license}
 

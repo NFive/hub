@@ -1,18 +1,17 @@
 {
   "name": "nfive-hub",
   "version": "1.0.0",
-  "description": "Plugin Hub for NFive Repositories hosted via Github",
+  "description": "Hub for NFive plugin repositories hosted via Github",
   "license": "GPL-3.0",
-  "repository": "nobodyshome/nfive-hub",
-  "homepage": "https://github.com/nobodyshome/nfive-hub",
-  "author": "Ryan Smith <contact@nobodyshome.me.uk> (https://nobodyshome.me.uk/)",
+  "repository": "NFive/hub",
+  "homepage": "https://nfive.io/",
   "bugs": {
-    "email": "contact@nobodyshome.me.uk",
-    "url": "https://github.com/nobodyshome/nfive-hub/issues"
+    "url": "https://github.com/NFive/hub/issues"
   },
   "keywords": [
+    "nfive",
     "nfive-plugins",
-    "nfive"
+    "plugin-repository"
   ],
   "main": "server.js",
   "scripts": {
@@ -35,6 +34,7 @@
     "moment": "^2.22.2",
     "mongoose": "^5.2.14",
     "node-fetch": "^2.2.0",
+    "octicons": "^8.1.0",
     "pug": "^2.0.0-rc.2"
   },
   "devDependencies": {

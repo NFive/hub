@@ -22,7 +22,7 @@ module.exports = {
 
 		return await ctx.render('project', {
 			pretty: config.prettyHtml,
-			title: plugin.name + config.name,
+			title: plugin.name + ' · ' + config.name,
 			readme: readme,
 			plugin: plugin,
 			release: release,
