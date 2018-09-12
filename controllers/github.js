@@ -6,10 +6,12 @@ const Plugins = require('../models/plugins');
 const util = require('util');
 const fetch = require('node-fetch');
 const marked = require('marked');
-const dompurify = require('dompurify');
+const sanitizer = require('marked-sanitizer-github').default;
 
 marked.setOptions({
-	headerPrefix: 'readme'
+	headerPrefix: 'readme-',
+	sanitize: true,
+	sanitizer: new sanitizer().getSanitizer()
 });
 
 const update = async () => {
@@ -46,8 +48,8 @@ const update = async () => {
 						return {
 							tag: r.tag_name,
 							downloads: r.assets[0].download_count,
-							notes: dompurify(marked(r.body)),
-							readme: dompurify(marked(await readme.text())),
+							notes: marked(r.body),
+							readme: marked(await readme.text()),
 							created: r.published_at
 						};
 					})
@@ -59,7 +61,7 @@ const update = async () => {
 						repo: i.name
 					});
 					readme = await fetch(readme.data.download_url);
-					readme = dompurify(marked(await readme.text()));
+					readme = marked(await readme.text());
 				}
 
 				await Plugins.findOneAndUpdate({ gh_id: i.id },
