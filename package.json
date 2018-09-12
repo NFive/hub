@@ -28,7 +28,7 @@
     "koa-router": "^7.2.1",
     "koa-static-cache": "^5.1.1",
     "koa-views": "^6.1.4",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "marked": "^0.5.0",
     "marked-sanitizer-github": "^1.0.0",
     "moment": "^2.22.2",
