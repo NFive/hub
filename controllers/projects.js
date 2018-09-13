@@ -7,25 +7,26 @@ module.exports = {
 		const version = ctx.params.version;
 
 		const plugin = await Plugins.findOne({ project: ctx.params.project });
-
 		if (plugin == null) return ctx.throw(404, 'Project not found!');
 
-		let release = plugin.releases[0];
+		let releases = plugin.releases;
+		if (plugin.has_release) { releases = releases.sort(r => r.tag).reverse() }
 
+		let selectedrelease = releases[0];
 		if (version) {
-			release = plugin.releases.filter(r => r.tag == version)[0];
+			selectedrelease = plugin.releases.filter(r => r.tag == version)[0];
 		}
+		if (selectedrelease == null) return ctx.throw(404, plugin.name + ' version ' + version + ' not found!');
 
-		if (release == null) return ctx.throw(404, plugin.name + ' version ' + version + ' not found!');
-
-		const readme = plugin.has_release ? release.readme : plugin.readme;
+		const readme = plugin.has_release ? selectedrelease.readme : plugin.readme;
 
 		return await ctx.render('project', {
 			pretty: config.prettyHtml,
 			title: plugin.name + ' · ' + config.name,
 			readme: readme,
 			plugin: plugin,
-			release: release,
+			release: selectedrelease,
+			releases: releases,
 			moment: moment
 		});
 	}
