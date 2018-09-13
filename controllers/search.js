@@ -4,6 +4,7 @@ const Plugins = require('../models/plugins');
 
 module.exports = {
 	async view(ctx) {
+
 		return await ctx.render('search', {
 			pretty: config.prettyHtml,
 			title: config.name,
@@ -20,7 +21,7 @@ module.exports = {
 				'name',
 				'releases[0].tag',
 				'counts',
-				'downloads'
+				'project_downloads'
 			])
 		);
 	},

@@ -1,6 +1,7 @@
 const config = require('config');
 const Plugins = require('../models/plugins');
 const moment = require('moment');
+const semver = require('semver')
 
 module.exports = {
 	async view(ctx) {
@@ -10,7 +11,7 @@ module.exports = {
 		if (plugin == null) return ctx.throw(404, 'Project not found!');
 
 		let releases = plugin.releases;
-		if (plugin.has_release) { releases = releases.sort(r => r.tag).reverse() }
+		if (plugin.has_release) { releases = releases.sort((a, b) => semver.rcompare(a.tag, b.tag)) }
 
 		let selectedrelease = releases[0];
 		if (version) {

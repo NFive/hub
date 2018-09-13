@@ -1,4 +1,27 @@
 extends layout
 
 block content
-	h1.display-3 #{title}
+	// Stats & Official Repos
+	h1.display-4.text-center Create better FiveM plugins faster with NFive
+	.card-deck
+		.card
+			//img.card-img-top(src='.../100px180/', alt='Card image cap')
+			.card-body
+			h5.card-title.text-center Unique Plugins
+			p.card-text.text-center #{uniquePlugins}
+		.card
+			//img.card-img-top(src='.../100px180/', alt='Card image cap')
+			.card-body
+			h5.card-title.text-center Plugin Installs
+			p.card-text.text-center #{pluginInstalls}
+		.card
+			//img.card-img-top(src='.../100px180/', alt='Card image cap')
+			.card-body
+			h5.card-title.text-center Plugin Versions
+			p.card-text.text-center #{pluginVersions}
+
+	// Most installs
+
+	// What is NFive & NFive Hub?
+
+	// Where to get started? (Link to docs/guide to nfpm)

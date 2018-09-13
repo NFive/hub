@@ -49,7 +49,7 @@ Repositories.virtual('has_notes').get(function () {
 	return this.has_releases && this.releases.notes == null;
 });
 
-Repositories.virtual('downloads').get(function () {
+Repositories.virtual('project_downloads').get(function () {
 	return lodash.sumBy(this.releases, (o) => o.downloads);
 });
 

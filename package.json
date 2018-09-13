@@ -34,8 +34,10 @@
     "moment": "^2.22.2",
     "mongoose": "^5.2.14",
     "node-fetch": "^2.2.0",
+    "numeral": "^2.0.6",
     "octicons": "^8.1.0",
-    "pug": "^2.0.0-rc.2"
+    "pug": "^2.0.0-rc.2",
+    "semver": "^5.5.1"
   },
   "devDependencies": {
     "eslint": "^5.5.0",
