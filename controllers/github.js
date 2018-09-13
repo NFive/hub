@@ -14,6 +14,29 @@ marked.setOptions({
 	sanitizer: new sanitizer().getSanitizer()
 });
 
+new cronjob({
+	start: true,
+	timeZone: 'Etc/UTC',
+	cronTime: '0 * * * *',
+	onTick: async () => {
+		util.log('Starting database update....');
+		await update();
+		util.log('Starting database cleanup...');
+		await cleanup();
+	}
+});
+
+// new cronjob({
+// 	start: true,
+// 	timeZone: 'Etc/UTC',
+// 	cronTime: '0 30 5 * * * *',
+// 	onTick: async () => {
+// 		util.log('Starting stats update.....');
+// 		await statUpdate();
+// 	}
+// });
+
+
 const update = async () => {
 	try {
 		github.authenticate({
@@ -110,15 +133,3 @@ const cleanup = async () => {
 		util.log('Cleanup Error: %s', err);
 	}
 };
-
-new cronjob({
-	start: true,
-	timeZone: 'Etc/UTC',
-	cronTime: '0 * * * *',
-	onTick: async () => {
-		util.log('Starting database update....');
-		await update();
-		await cleanup();
-		util.log('Database update completed');
-	}
-});
