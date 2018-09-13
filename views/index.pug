@@ -1,27 +1,37 @@
 extends layout
 
 block content
-	hr
 	h1.display-4.text-center Create better FiveM plugins faster with NFive
-	.card-deck
+
+	.card-deck.text-center.my-5
 		.card
-			//img.card-img-top(src='.../100px180/', alt='Card image cap')
 			.card-body
-			h5.card-title.text-center Unique Plugins
-			p.card-text.text-center #{uniquePlugins}
+				h4.card-title #{uniquePlugins}
+				h5.card-text Unique plugins
 		.card
-			//img.card-img-top(src='.../100px180/', alt='Card image cap')
 			.card-body
-			h5.card-title.text-center Plugin Installs
-			p.card-text.text-center #{pluginInstalls}
+				h4.card-title #{pluginInstalls}
+				h5.card-text Total installs
 		.card
-			//img.card-img-top(src='.../100px180/', alt='Card image cap')
 			.card-body
-			h5.card-title.text-center Plugin Versions
-			p.card-text.text-center #{pluginVersions}
+				h4.card-title #{pluginVersions}
+				h5.card-text Released versions
+
 	hr
-	h1.display-5.text-center Most Installed Plugins
-	hr
-	h1.display-5.text-center What is NFive & hub.nfive.io?
-	hr
-	h1.display-5.text-center Create better FiveM plugins faster with NFive
+
+	h2.display-5.text-center.mt-5.mb-3 Most Installed Plugins
+
+	.row
+		each plugin in top
+			.col-sm-4
+				.row.my-3
+					.col-sm-2
+						a(href='/' + plugin.name)
+							img(src=plugin.avatar_url width='50px')
+					.col-sm-10
+						a(href='/' + plugin.name)
+							h4.text-truncate #{plugin.name}
+						div.text-truncate= plugin.description
+						small #{plugin.releases[0].tag} released
+							time(datetime=moment(plugin.releases[0].created).format('YYYY-MM-DD') title=moment(plugin.releases[0].created).format('YYYY-MM-DD')) #{moment(plugin.releases[0].created).fromNow()}
+
