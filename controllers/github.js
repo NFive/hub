@@ -71,6 +71,7 @@ const update = async () => {
 						return {
 							tag: r.tag_name,
 							downloads: r.assets[0].download_count,
+							download_url: r.download_url,
 							notes: marked(r.body),
 							readme: marked(await readme.text()),
 							created: r.published_at

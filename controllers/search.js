@@ -19,7 +19,7 @@ module.exports = {
 				'org',
 				'project',
 				'name',
-				'releases[0].tag',
+				'releases',
 				'counts',
 				'project_downloads'
 			])

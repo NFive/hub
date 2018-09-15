@@ -4,6 +4,7 @@ const lodash = require('lodash');
 const Release = new mongoose.Schema({
 	tag: { type: String, required: true },
 	downloads: { type: Number, required: true },
+	download_url: {type: String},
 	notes: String,
 	readme: String,
 	created: { type: Date, required: true }
