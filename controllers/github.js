@@ -17,7 +17,7 @@ marked.setOptions({
 new cronjob({
 	start: true,
 	timeZone: 'Etc/UTC',
-	cronTime: '0 * * * *',
+	cronTime: '* * * * *',
 	onTick: async () => {
 		util.log('Starting database update....');
 		await update();
@@ -26,23 +26,15 @@ new cronjob({
 	}
 });
 
-// new cronjob({
-// 	start: true,
-// 	timeZone: 'Etc/UTC',
-// 	cronTime: '0 30 5 * * * *',
-// 	onTick: async () => {
-// 		util.log('Starting stats update.....');
-// 		await statUpdate();
-// 	}
-// });
-
 
 const update = async () => {
 	try {
-		github.authenticate({
+		if (config.github.token) {
+			github.authenticate({
 			type: config.github.type,
 			token: config.github.token
-		});
+			});
+		}
 
 		const result = await github.search.repos({ q: 'topic:nfive-plugin' });
 
@@ -71,7 +63,7 @@ const update = async () => {
 						return {
 							tag: r.tag_name,
 							downloads: r.assets[0].download_count,
-							download_url: r.download_url,
+							download_url: r.assets[0].browser_download_url,
 							notes: marked(r.body),
 							readme: marked(await readme.text()),
 							created: r.published_at
