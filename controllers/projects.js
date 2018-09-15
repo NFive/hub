@@ -1,7 +1,8 @@
-const config = require('config');
-const Plugins = require('../models/plugins');
-const moment = require('moment');
+const config = require('config')
+const Plugins = require('../models/plugins')
+const moment = require('moment')
 const semver = require('semver')
+const lodash = require('lodash')
 
 module.exports = {
 	async view(ctx) {
@@ -30,5 +31,18 @@ module.exports = {
 			releases: releases,
 			moment: moment
 		});
+	},
+
+	async json(ctx) {
+		const plugin = await Plugins.findOne({ project: ctx.params.project });
+		if (plugin == null) return ctx.throw(404, 'Project not found!');
+
+		ctx.body = {
+			name: plugin.org,
+			org: plugin.org,
+			project: plugin.project,
+			description: plugin.description,
+			versions: plugin.releases.map(p => { return { version: p.tag, download: p.download_url	} } )
+		}
 	}
 };

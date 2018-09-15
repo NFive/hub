@@ -17,7 +17,7 @@ marked.setOptions({
 new cronjob({
 	start: true,
 	timeZone: 'Etc/UTC',
-	cronTime: '* * * * *',
+	cronTime: '0 * * * *',
 	onTick: async () => {
 		util.log('Starting database update....');
 		await update();
