@@ -21,10 +21,9 @@ html(lang='en')
 									img(src='/logo.svg')
 
 						.col-lg-11
-							form(action='/search')
-								form(autocomplete='off')
+							form(action='/search' autocomplete='off')
 								.input-group.mb-3
-									input#search.form-control(name='q' placeholder='Search plugins' type='text')
+									input#search.form-control(name='q' placeholder='Search plugins' type='text' autocomplete='off')
 									button.d-none(type='submit') Search
 
 
