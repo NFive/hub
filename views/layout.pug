@@ -22,6 +22,7 @@ html(lang='en')
 
 						.col-lg-11
 							form(action='/search')
+								form(autocomplete='off')
 								.input-group.mb-3
 									input#search.form-control(name='q' placeholder='Search plugins' type='text')
 									button.d-none(type='submit') Search
