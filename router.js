@@ -7,13 +7,6 @@ const projects = require('./controllers/projects');
 
 router
 	.get('/', index.view)
-	// .get('/', async ctx => {
-	// 	await ctx.render('index', {
-	// 		pretty: config.prettyHtml,
-	// 		title: config.name,
-	// 		test: Plugins
-	// 	});
-	// })
 	.get('/search', search.view)
 	.get('/search.json', search.json)
 	.get('/:owner', owners.view)

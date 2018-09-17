@@ -19,14 +19,13 @@ new cronjob({
 	timeZone: 'Etc/UTC',
 	cronTime: '0 * * * *',
 	onTick: async () => {
-		util.log('Starting database update....');
 		await update();
-		util.log('Starting database cleanup...');
 		await cleanup();
 	}
 });
 
 const update = async () => {
+	util.log('Starting database update....');
 	try {
 		if (config.github.token) {
 			github.authenticate({
@@ -41,14 +40,9 @@ const update = async () => {
 			let readme;
 
 			try {
-				let releases = await github.repos.getReleases({
-					owner: i.owner.login,
-					repo: i.name,
-					per_page: '100',
-					page: '1'
-				});
+				let releases = await paginate(github.repos.getReleases, { owner: i.owner.login, repo: i.name, per_page: 100 })
 
-				releases = releases.data.filter(r => !r.draft && !r.prerelease);
+				releases = await releases.filter(r => !r.draft && !r.prerelease);
 
 				releases = await Promise.all(
 					releases.map(async r => {
@@ -115,6 +109,7 @@ const update = async () => {
 };
 
 const cleanup = async () => {
+	util.log('Starting database cleanup...');
 	try {
 		const cutoff = new Date();
 
@@ -125,3 +120,17 @@ const cleanup = async () => {
 		util.log('Cleanup Error: %s', err);
 	}
 };
+
+let paginate = async (method, args) => {
+	try {
+		let response = await method(args)
+		let { data } = response
+		while (github.hasNextPage(response)) {
+			response = await github.getNextPage(response)
+			data = data.concat(response.data)
+		}
+		return data
+	} catch (err) {
+		util.log('Paginate Error: %s', err);
+	}
+}

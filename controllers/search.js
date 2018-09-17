@@ -9,7 +9,7 @@ module.exports = {
 			pretty: config.prettyHtml,
 			title: config.name,
 			query: ctx.query.q,
-			results: await module.exports.search(ctx.query.q)
+			results: await module.exports.search(ctx.query.q),
 		});
 	},
 
