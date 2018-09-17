@@ -8,8 +8,12 @@ block content
 				data-trigger='click'
 				data-placement='top'
 			)#install.border.rounded.m-3
-				| nfpm install #{plugin.name}
-				|
+				if plugin.latest_version == release.tag
+					| nfpm install #{plugin.name}
+					|
+				else
+					| nfpm install #{plugin.name}@#{release.tag}
+					|
 				:icon(size=16) clippy
 
 	header

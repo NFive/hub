@@ -42,6 +42,10 @@ Repositories.virtual('has_release').get(function () {
 	return this.releases && this.releases.length;
 });
 
+Repositories.virtual('latest_version').get(function () {
+	return this.releases[0].tag;
+});
+
 Repositories.virtual('has_readme').get(function () {
 	return this.has_releases && this.releases.readme == null;
 });
