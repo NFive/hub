@@ -1,5 +1,4 @@
 const router = require('koa-router')();
-const config = require('config');
 const index = require('./controllers/index');
 const search = require('./controllers/search');
 const owners = require('./controllers/owners');

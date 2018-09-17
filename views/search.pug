@@ -1,26 +1,10 @@
 extends layout
 
 block content
-	.row
-		.col-sm-6
-			h2.mb-5 #{results.length} plugins found
-			h2.mb-5 #{page}
-		.col-sm-6
-			nav(aria-label='Search Results Pages')
-				ul.pagination.justify-content-end
-					li.page-item.disabled
-					a.page-link(href='#') Previous
-					li.page-item
-					a.page-link(href='#') 1
-					li.page-item
-					a.page-link(href='#') 2
-					li.page-item
-					a.page-link(href='#') 3
-					li.page-item
-					a.page-link(href='#') Next
+	h2.mb-5 #{totalPlugins} plugins found
 	hr
 
-	each plugin in results
+	each plugin in pagedResults
 		.row
 			.col-sm-8
 				div.align-middle
@@ -42,16 +26,25 @@ block content
 					a(href="/" +  plugin.name) #{plugin.project_downloads}
 					p installs
 	hr
-	//- nav(aria-label='Page navigation example')
-	//- 	ul.pagination.justify-content-end
-	//- 		li.page-item.disabled
-	//- 		a.page-link(href='#') Previous
-	//- 		li.page-item
-	//- 		a.page-link(href='#') 1
-	//- 		li.page-item
-	//- 		a.page-link(href='#') 2
-	//- 		li.page-item
-	//- 		a.page-link(href='#') 3
-	//- 		li.page-item
-	//- 		a.page-link(href='#') Next
-
+	nav(aria-label='Search Results Pages')
+		ul.pagination.justify-content-end
+			if (page == 1)
+				li.page-item.disabled
+					a.page-link(href=url+prev) Previous
+			else
+				li.page-item
+					a.page-link(href=url+prev) Previous
+			- var n = 1;
+			while n <= totalPages
+				if n == page
+					li.page-item.active
+						a.page-link(href=url+n)= n++
+				else
+					li.page-item
+						a.page-link(href=url+n)= n++
+			if (next > totalPages)
+				li.page-item.disabled
+					a.page-link(href=url+next) Next
+			else
+				li.page-item
+					a.page-link(href=url+next) Next

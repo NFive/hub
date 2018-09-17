@@ -1,11 +1,14 @@
 extends layout
 
 block content
-	h2.mb-5 #{org}
-
+	header.mb-5
+		a(href='/' + owner).float-left
+			img(src=plugins[0].avatar_url width='75px' height='75px').mr-3
+		h2.pt-2
+			a(href='/' + owner) #{owner}
 	hr
 
-	each plugin in plugins
+	each plugin in pagedResults
 		.row
 			.col-sm-8
 				div.align-middle
@@ -26,3 +29,26 @@ block content
 				div
 					a(href="/" +  plugin.name) #{plugin.project_downloads}
 					p installs
+	hr
+	nav(aria-label='Search Results Pages')
+		ul.pagination.justify-content-end
+			if (page == 1)
+				li.page-item.disabled
+					a.page-link(href=url+prev) Previous
+			else
+				li.page-item
+					a.page-link(href=url+prev) Previous
+			- var n = 1;
+			while n <= totalPages
+				if n == page
+					li.page-item.active
+						a.page-link(href=url+n)= n++
+				else
+					li.page-item
+						a.page-link(href=url+n)= n++
+			if (next > totalPages)
+				li.page-item.disabled
+					a.page-link(href=url+next) Next
+			else
+				li.page-item
+					a.page-link(href=url+next) Next
