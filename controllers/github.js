@@ -26,7 +26,6 @@ new cronjob({
 	}
 });
 
-
 const update = async () => {
 	try {
 		if (config.github.token) {
@@ -83,7 +82,7 @@ const update = async () => {
 				await Plugins.findOneAndUpdate({ gh_id: i.id },
 					{
 						gh_id: i.id,
-						org: i.owner.login,
+						owner: i.owner.login,
 						project: i.name,
 						avatar_url: i.owner.avatar_url,
 						homepage_url: i.homepage,

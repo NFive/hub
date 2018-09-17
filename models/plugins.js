@@ -12,7 +12,7 @@ const Release = new mongoose.Schema({
 
 const Repositories = new mongoose.Schema({
 	gh_id: { type: Number, required: true, unique: true },
-	org: { type: String, required: true, index: true },
+	owner: { type: String, required: true, index: true },
 	project: { type: String, required: true, index: true },
 	description: { type: String, index: true },
 	license: String,
@@ -31,7 +31,7 @@ const Repositories = new mongoose.Schema({
 });
 
 Repositories.virtual('name').get(function () {
-	return this.org + '/' + this.project;
+	return this.owner + '/' + this.project;
 });
 
 Repositories.virtual('gh_url').get(function () {
@@ -55,7 +55,7 @@ Repositories.virtual('project_downloads').get(function () {
 });
 
 Repositories.index({
-	org: 'text',
+	owner: 'text',
 	project: 'text',
 	description: 'text'
 });

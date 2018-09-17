@@ -16,7 +16,7 @@ module.exports = {
 	async json(ctx) {
 		ctx.body = lodash.map(await module.exports.search(ctx.query.q), r =>
 			lodash.pick(r, [
-				'org',
+				'owner',
 				'project',
 				'name',
 				'releases',

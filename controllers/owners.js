@@ -3,14 +3,14 @@ const Plugins = require('../models/plugins');
 
 module.exports = {
 	async view(ctx) {
-		const plugins = await Plugins.find({ org: ctx.params.org });
+		const plugins = await Plugins.find({ owner: ctx.params.owner });
 
-		if (plugins.length < 1) return ctx.throw(404, 'Org not found!');
+		if (plugins.length < 1) return ctx.throw(404, 'Owner not found!');
 
-		return await ctx.render('org', {
+		return await ctx.render('owner', {
 			pretty: config.prettyHtml,
 			title: config.name,
-			org: plugins[0].org,
+			owner: plugins[0].owner,
 			plugins: plugins
 		});
 	}

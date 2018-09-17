@@ -43,7 +43,7 @@ module.exports = {
 				total: {
 					$sum: '$releases.downloads'
 				},
-				org: { $first: '$org' },
+				owner: { $first: '$owner' },
 				project: { $first: '$project' },
 				avatar_url: { $first: '$avatar_url' },
 				description: { $first: '$description' },
@@ -58,7 +58,7 @@ module.exports = {
 		}, {
 			$project: {
 				_id: 0,
-				org: 1,
+				owner: 1,
 				project: 1,
 				avatar_url: 1,
 				description: 1,
