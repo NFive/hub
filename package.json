@@ -19,7 +19,7 @@
     "lint": "eslint . && pug-lint ./views"
   },
   "dependencies": {
-    "@octokit/rest": "^15.11.2",
+    "@octokit/rest": "^15.11.4",
     "config": "^2.0.1",
     "cron": "^1.4.1",
     "koa": "^2.5.3",
@@ -32,7 +32,7 @@
     "marked": "^0.5.0",
     "marked-sanitizer-github": "^1.0.0",
     "moment": "^2.22.2",
-    "mongoose": "^5.2.14",
+    "mongoose": "^5.2.15",
     "node-fetch": "^2.2.0",
     "numeral": "^2.0.6",
     "octicons": "^8.1.0",
@@ -40,7 +40,7 @@
     "semver": "^5.5.1"
   },
   "devDependencies": {
-    "eslint": "^5.5.0",
+    "eslint": "^5.6.0",
     "nodemon": "^1.18.4",
     "pug-lint": "^2.3.0"
   }
