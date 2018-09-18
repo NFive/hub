@@ -9,7 +9,7 @@ require('./controllers/github');
 app.keys = config.keys;
 app.proxy = true;
 
-app.use(require('koa-logger')());
+if (process.env.JEST_WORKER_ID == undefined) app.use(require('koa-logger')());
 app.use(require('koa-compress')());
 app.use(require('koa-json')());
 app.use(require('koa-static-cache')('./public', {
