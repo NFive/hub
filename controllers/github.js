@@ -29,8 +29,8 @@ const update = async () => {
 	try {
 		if (config.github.token) {
 			github.authenticate({
-			type: config.github.type,
-			token: config.github.token
+				type: config.github.type,
+				token: config.github.token
 			});
 		}
 
@@ -123,14 +123,16 @@ const cleanup = async () => {
 
 let paginate = async (method, args) => {
 	try {
-		let response = await method(args)
-		let { data } = response
+		let response = await method(args);
+		let { data } = response;
+
 		while (github.hasNextPage(response)) {
-			response = await github.getNextPage(response)
-			data = data.concat(response.data)
+			response = await github.getNextPage(response);
+			data = data.concat(response.data);
 		}
-		return data
+
+		return data;
 	} catch (err) {
 		util.log('Paginate Error: %s', err);
 	}
-}
+};

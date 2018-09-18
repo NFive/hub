@@ -4,19 +4,23 @@ const Plugins = require('../models/plugins');
 
 module.exports = {
 	async view(ctx) {
+		const results = await module.exports.search(ctx.query.q);
 
-		const results = await module.exports.search(ctx.query.q)
+		const perPage = 15;
+		let page = 1;
 
-		const perPage = 15
-		var page = 1
+		const totalPages = Math.ceil(results.length / perPage);
+		if (ctx.query.page) {
+			page = Number(ctx.query.page);
+		}
 
-		const totalPages = Math.ceil(results.length / perPage)
-		if (ctx.query.page) { page = Number(ctx.query.page) }
+		if (!Number.isInteger(page)) return ctx.throw(404, 'Page not found!');
+		if (page < 1 || page > totalPages) return ctx.throw(404, 'Page not found!');
 
-		if (!Number.isInteger(page)) return ctx.throw(404, 'Page not found!')
-		else if (page < 1 || page > totalPages) return ctx.throw(404, 'Page not found!')
-
-		const pagedResults = results.slice((perPage * page) - perPage, perPage * page)
+		const pagedResults = results.slice(
+			perPage * page - perPage,
+			perPage * page
+		);
 
 		return await ctx.render('search', {
 			pretty: config.prettyHtml,
@@ -26,10 +30,9 @@ module.exports = {
 			totalPlugins: results.length,
 			pagedResults: pagedResults,
 			totalPages: totalPages,
-			url: '/search?q='+ctx.query.q+'&page=',
+			url: '/search?q=' + ctx.query.q + '&page=',
 			prev: page - 1,
 			next: page + 1
-
 		});
 	},
 

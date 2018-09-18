@@ -1,8 +1,7 @@
-const config = require('config')
-const Plugins = require('../models/plugins')
-const moment = require('moment')
-const semver = require('semver')
-const lodash = require('lodash')
+const config = require('config');
+const moment = require('moment');
+const semver = require('semver');
+const Plugins = require('../models/plugins');
 
 module.exports = {
 	async view(ctx) {
@@ -12,22 +11,25 @@ module.exports = {
 		if (plugin == null) return ctx.throw(404, 'Plugin not found!');
 
 		let releases = plugin.releases;
-		if (plugin.has_release) { releases = releases.sort((a, b) => semver.rcompare(a.tag, b.tag)) }
-
-		let selectedrelease = releases[0];
-		if (version) {
-			selectedrelease = plugin.releases.filter(r => r.tag == version)[0];
+		if (plugin.has_release) {
+			releases = releases.sort((a, b) => semver.rcompare(a.tag, b.tag));
 		}
-		if (selectedrelease == null) return ctx.throw(404, plugin.name + ' version ' + version + ' not found!');
 
-		const readme = plugin.has_release ? selectedrelease.readme : plugin.readme;
+		let selectedRelease = releases[0];
+		if (version) {
+			selectedRelease = plugin.releases.filter(r => r.tag == version)[0];
+		}
+
+		if (selectedRelease == null) return ctx.throw(404, plugin.name + ' version ' + version + ' not found!');
+
+		const readme = plugin.has_release ? selectedRelease.readme : plugin.readme;
 
 		return await ctx.render('project', {
 			pretty: config.prettyHtml,
 			title: plugin.name + ' · ' + config.name,
 			readme: readme,
 			plugin: plugin,
-			release: selectedrelease,
+			release: selectedRelease,
 			releases: releases,
 			moment: moment
 		});
@@ -42,7 +44,9 @@ module.exports = {
 			owner: plugin.owner,
 			project: plugin.project,
 			description: plugin.description,
-			versions: plugin.releases.map(p => { return { version: p.tag, download: p.download_url	} } )
-		}
+			versions: plugin.releases.map(p => {
+				return { version: p.tag, download: p.download_url };
+			})
+		};
 	}
 };
