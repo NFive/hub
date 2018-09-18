@@ -4,9 +4,7 @@
   "db": "mongodb://localhost/nfivehub",
   "prettyHtml": true,
   "cacheAge": 86400,
-
-  "github":
-  {
+  "github": {
     "type": "oauth",
     "token": ""
   }
