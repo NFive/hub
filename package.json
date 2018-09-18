@@ -16,7 +16,9 @@
   "main": "server.js",
   "scripts": {
     "watch": "nodemon -L -e js,json,pug",
-    "lint": "eslint . && pug-lint ./views"
+    "lint": "eslint . && pug-lint ./views",
+    "test": "jest",
+    "watch-test": "jest --watch --detectOpenHandles"
   },
   "dependencies": {
     "@octokit/rest": "^15.11.4",
@@ -42,7 +44,14 @@
   },
   "devDependencies": {
     "eslint": "^5.6.0",
+    "jest": "^23.6.0",
+    "jest-extended": "^0.9.0",
     "nodemon": "^1.18.4",
-    "pug-lint": "^2.3.0"
+    "pug-lint": "^2.3.0",
+    "supertest": "^3.3.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupTestFrameworkScriptFile": "jest-extended"
   }
 }
