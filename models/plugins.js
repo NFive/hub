@@ -38,6 +38,10 @@ Repositories.virtual('gh_url').get(function () {
 	return 'https://github.com/' + this.name;
 });
 
+Repositories.virtual('gh_url_owner').get(function () {
+	return 'https://github.com/' + this.owner;
+});
+
 Repositories.virtual('has_release').get(function () {
 	return this.releases && this.releases.length;
 });

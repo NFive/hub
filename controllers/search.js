@@ -1,34 +1,31 @@
 const config = require('config');
-const lodash = require('lodash');
 const Plugins = require('../models/plugins');
 
 module.exports = {
 	async view(ctx) {
-		const results = await module.exports.search(ctx.query.q);
-
 		const perPage = 15;
 		let page = 1;
 
-		const totalPages = Math.ceil(results.length / perPage);
 		if (ctx.query.page) {
 			page = Number(ctx.query.page);
 		}
 
 		if (!Number.isInteger(page)) return ctx.throw(404, 'Page not found!');
+
+		const totalResults = await module.exports.count(ctx.query.q);
+		const totalPages = Math.ceil(totalResults / perPage);
+
 		if (page < 1 || page > totalPages) return ctx.throw(404, 'Page not found!');
 
-		const pagedResults = results.slice(
-			perPage * page - perPage,
-			perPage * page
-		);
+		const results = await module.exports.search(ctx.query.q, perPage, page);
 
 		return await ctx.render('search', {
 			pretty: config.prettyHtml,
 			title: config.name,
 			query: ctx.query.q,
 			page: page,
-			totalPlugins: results.length,
-			pagedResults: pagedResults,
+			totalPlugins: totalResults,
+			pagedResults: results,
 			totalPages: totalPages,
 			url: '/search?q=' + ctx.query.q + '&page=',
 			prev: page - 1,
@@ -36,32 +33,29 @@ module.exports = {
 		});
 	},
 
-	async json(ctx) {
-		ctx.body = lodash.map(await module.exports.search(ctx.query.q), r =>
-			lodash.pick(r, [
-				'owner',
-				'project',
-				'name',
-				'releases',
-				'counts',
-				'project_downloads'
-			])
-		);
-	},
-
-	async search(query) {
-		return (await Plugins.find(
+	async count(query) {
+		return (await Plugins.countDocuments(
 			{
 				$text: {
 					$search: query
 				}
-			},
-			{
-				score: {
-					$meta: 'textScore'
-				}
 			}
-		).sort({
+		));
+	},
+
+	async search(query, perPage = 9999, page = 1) {
+		return (await Plugins.find({
+			$text: {
+				$search: query
+			}
+		}, {
+			score: {
+				$meta: 'textScore'
+			}
+		}, {
+			skip: perPage * (page - 1),
+			limit: perPage
+		}).sort({
 			score: {
 				$meta: 'textScore'
 			}

@@ -33,20 +33,5 @@ module.exports = {
 			releases: releases,
 			moment: moment
 		});
-	},
-
-	async json(ctx) {
-		const plugin = await Plugins.findOne({ project: ctx.params.project });
-		if (plugin == null) return ctx.throw(404, 'Plugin not found!');
-
-		ctx.body = {
-			name: plugin.name,
-			owner: plugin.owner,
-			project: plugin.project,
-			description: plugin.description,
-			versions: plugin.releases.map(p => {
-				return { version: p.tag, download: p.download_url };
-			})
-		};
 	}
 };

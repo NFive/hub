@@ -48,8 +48,11 @@ html(lang='en')
 					datumTokenizer: Bloodhound.tokenizers.whitespace,
 					queryTokenizer: Bloodhound.tokenizers.whitespace,
 					remote: {
-						url: '/search.json?q=%QUERY%',
-						wildcard: '%QUERY%'
+						url: '/api/search.json?q=%QUERY%',
+						wildcard: '%QUERY%',
+						transform: function(data) {
+							return data.results;
+						}
 					}
 				})
 			}).bind('typeahead:select', function(e, suggestion) {
