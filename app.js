@@ -11,6 +11,7 @@ app.proxy = true;
 
 app.use(require('koa-logger')());
 app.use(require('koa-compress')());
+app.use(require('koa-json')());
 app.use(require('koa-static-cache')('./public', {
 	maxAge: config.cacheAge
 }));
