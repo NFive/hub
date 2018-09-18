@@ -4,7 +4,7 @@ const config = require('config');
 const router = require('./router');
 const octicons = require("octicons");
 require('./db')();
-require('./controllers/github');
+// require('./controllers/github');
 
 app.keys = config.keys;
 app.proxy = true;
