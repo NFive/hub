@@ -1,4 +1,7 @@
 {
   "port": 80,
-  "db": "mongodb://db/nfivehub"
+  "database": {
+    "host": "db",
+    "db": "nfivehub"
+  }
 }

@@ -10,8 +10,8 @@ module.exports = {
 	},
 
 	async search(ctx) {
-		if (ctx.query.q == undefined) return ctx.throw(404, {
-			error: 'Query not provided'
+		if (ctx.query.q == undefined) return ctx.throw(404, 'search query not provided', {
+			missing: 'q'
 		});
 
 		const perPage = 15;
@@ -21,8 +21,8 @@ module.exports = {
 			page = Number(ctx.query.page);
 		}
 
-		if (!Number.isInteger(page)) return ctx.throw(404, {
-			error: 'Page not found'
+		if (!Number.isInteger(page)) return ctx.throw(404, 'bad page number requested', {
+			page: ctx.query.page
 		});
 
 		const totalResults = await Plugins.countDocuments(
@@ -35,8 +35,8 @@ module.exports = {
 
 		const totalPages = Math.max(1, Math.ceil(totalResults / perPage));
 
-		if (page < 1 || page > totalPages) return ctx.throw(404, {
-			error: 'Page not found'
+		if (page < 1 || page > totalPages) return ctx.throw(404, 'invalid page number requested', {
+			page: page
 		});
 
 		const results = (await Plugins.find({
@@ -85,8 +85,9 @@ module.exports = {
 
 	async owner(ctx) {
 		const owner = await Plugins.findOne({ owner: ctx.params.owner });
-		if (owner == null) return ctx.throw(404, {
-			error: 'Owner not found'
+
+		if (owner == null) return ctx.throw(404, 'owner not found', {
+			owner: ctx.params.owner
 		});
 
 		ctx.body = {
@@ -99,7 +100,10 @@ module.exports = {
 
 	async project(ctx) {
 		const project = await Plugins.findOne({ owner: ctx.params.owner, project: ctx.params.project });
-		if (project == null) return ctx.throw(404, { error: 'Project not found'});
+		if (project == null) return ctx.throw(404, 'project not found', {
+			owner: ctx.params.owner,
+			project: ctx.params.project
+		});
 
 		ctx.body = {
 			name: project.name,
@@ -121,7 +125,11 @@ module.exports = {
 
 	async version(ctx) {
 		const version = await Plugins.findOne({ owner: ctx.params.owner, project: ctx.params.project, 'releases.tag': ctx.params.version });
-		if (version == null) return ctx.throw(404, { error: 'Version not found'});
+		if (version == null) return ctx.throw(404, 'version not found', {
+			owner: ctx.params.owner,
+			project: ctx.params.project,
+			version: ctx.params.version
+		});
 
 		version.release = version.releases.filter(r => r.tag == ctx.params.version)[0];
 

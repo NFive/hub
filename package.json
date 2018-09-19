@@ -17,7 +17,7 @@
   "scripts": {
     "watch": "nodemon -L -e js,json,pug",
     "lint": "eslint . && pug-lint ./views",
-    "test": "jest --forceExit",
+    "test": "jest --detectOpenHandles --forceExit",
     "watch-test": "jest --watch --detectOpenHandles"
   },
   "dependencies": {
@@ -52,6 +52,6 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "setupTestFrameworkScriptFile": "jest-extended"
+    "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js"
   }
 }

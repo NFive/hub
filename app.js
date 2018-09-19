@@ -2,9 +2,7 @@ const koa = require('koa');
 const app = new koa();
 const config = require('config');
 const router = require('./router');
-const octicons = require("octicons");
-require('./db')();
-// require('./controllers/github');
+const octicons = require('octicons');
 
 app.keys = config.keys;
 app.proxy = true;
@@ -12,6 +10,22 @@ app.proxy = true;
 if (process.env.JEST_WORKER_ID == undefined) app.use(require('koa-logger')());
 app.use(require('koa-compress')());
 app.use(require('koa-json')());
+app.use(async (ctx, next) => {
+	try {
+		await next();
+	} catch (err) {
+		if (ctx.url.startsWith('/api/')) {
+			ctx.status = err.status || 500;
+			ctx.type = 'json';
+
+			ctx.body = {
+				error: err
+			};
+		}
+
+		ctx.app.emit('error', err, ctx);
+	}
+});
 app.use(require('koa-static-cache')('./public', {
 	maxAge: config.cacheAge
 }));
