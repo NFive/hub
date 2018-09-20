@@ -13,6 +13,8 @@ beforeEach(async () => {
 	for (const plugin of data) {
 		await new Plugins(plugin).save();
 	}
+
+	await Plugins.ensureIndexes();
 });
 
 afterEach(async () => {
