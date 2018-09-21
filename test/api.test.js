@@ -46,14 +46,20 @@ describe('api', () => {
 				.expect('Content-Type', 'application/json; charset=utf-8')
 				.expect(404);
 
+			expect(res.body.error.message).toBe('owner not found');
 			expect(res.body.error.owner).toBe('non-existant');
 		});
 
 		it('<200> should return matched owner', async () => {
-			await request
+			const res = await request
 				.get('/api/owner/NFive.json')
 				.expect('Content-Type', 'application/json; charset=utf-8')
 				.expect(200);
+
+			expect(res.body.name).toBe('NFive');
+			expect(res.body.avatar).toBeString();
+			expect(res.body.gh_url).toBeString();
+			expect(res.body.scraped).toBeDate();
 		});
 	});
 
