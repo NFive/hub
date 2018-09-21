@@ -40,7 +40,7 @@ const update = async () => {
 			let readme;
 
 			try {
-				let releases = await paginate(github.repos.getReleases, { owner: i.owner.login, repo: i.name, per_page: 100 })
+				let releases = await paginate(github.repos.getReleases, { owner: i.owner.login, repo: i.name, per_page: 100 });
 
 				releases = await releases.filter(r => !r.draft && !r.prerelease);
 
