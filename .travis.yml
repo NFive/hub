@@ -4,5 +4,5 @@ node_js: "node"
 services: mongodb
 
 before_script: npm install -g codecov
-
+install: npm install
 after_success: codecov
