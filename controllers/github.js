@@ -17,7 +17,7 @@ marked.setOptions({
 new cronjob({
 	start: true,
 	timeZone: 'Etc/UTC',
-	cronTime: '* * * * *',
+	cronTime: '0 * * * *',
 	onTick: async () => {
 		await update();
 		await cleanup();
@@ -34,8 +34,8 @@ const update = async () => {
 			});
 		}
 
-		var rateLimit = await github.misc.getRateLimit()
-		util.log('Limit: %s | Remaining: %s', rateLimit.data.rate.limit, rateLimit.data.rate.remaining)
+		var rateLimit = await github.misc.getRateLimit();
+		util.log('Limit: %s | Remaining: %s', rateLimit.data.rate.limit, rateLimit.data.rate.remaining);
 
 		const result = await github.search.repos({ q: 'topic:nfive-plugin' });
 
@@ -106,8 +106,8 @@ const update = async () => {
 				util.log('Error: %s', err);
 			}
 		}
-		rateLimit = await github.misc.getRateLimit()
-		util.log('Limit: %s | Remaining: %s', rateLimit.data.rate.limit, rateLimit.data.rate.remaining)
+		rateLimit = await github.misc.getRateLimit();
+		util.log('Limit: %s | Remaining: %s', rateLimit.data.rate.limit, rateLimit.data.rate.remaining);
 	} catch (err) {
 		util.log('Update Error: %s', err);
 	}
@@ -120,7 +120,7 @@ const cleanup = async () => {
 
 		const removals = await Plugins.find({
 			scraped: { $lte: cutoff.setDate(cutoff.getDate() - 5) }
-		})
+		});
 
 		for (let i of removals) {
 			util.log('id: %s | %s has been removed', i.gh_id, i.name);
@@ -129,7 +129,7 @@ const cleanup = async () => {
 		if (removals != null) {
 			await Plugins.deleteMany({
 				scraped: { $lte: cutoff.setDate(cutoff.getDate() - 5) }
-			})
+			});
 		}
 
 	} catch (err) {
