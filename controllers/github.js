@@ -93,7 +93,8 @@ const update = async () => {
 						releases: releases,
 						readme: readme,
 						license: i.license.key,
-						created: i.created_at
+						created: i.created_at,
+						scraped: Date.now()
 					},
 					{
 						upsert: true,
@@ -122,14 +123,12 @@ const cleanup = async () => {
 			scraped: { $lte: cutoff.setDate(cutoff.getDate() - 5) }
 		});
 
+		await Plugins.deleteMany({
+			scraped: { $lte: cutoff.setDate(cutoff.getDate() - 5) }
+		});
+
 		for (let i of removals) {
 			util.log('id: %s | %s has been removed', i.gh_id, i.name);
-		}
-
-		if (removals != null) {
-			await Plugins.deleteMany({
-				scraped: { $lte: cutoff.setDate(cutoff.getDate() - 5) }
-			});
 		}
 
 	} catch (err) {
