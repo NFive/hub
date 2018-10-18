@@ -118,13 +118,14 @@ const cleanup = async () => {
 	util.log('Starting database cleanup...');
 	try {
 		const cutoff = new Date();
+		cutoff.setDate(cutoff.getDate() - 5)
 
 		const removals = await Plugins.find({
-			scraped: { $lte: cutoff.setDate(cutoff.getDate() - 5) }
+			scraped: { $lte: cutoff }
 		});
 
 		await Plugins.deleteMany({
-			scraped: { $lte: cutoff.setDate(cutoff.getDate() - 5) }
+			scraped: { $lte: cutoff }
 		});
 
 		for (let i of removals) {

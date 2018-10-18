@@ -21,7 +21,7 @@
     "watch-test": "jest --watch --detectOpenHandles"
   },
   "dependencies": {
-    "@octokit/rest": "^15.12.0",
+    "@octokit/rest": "^15.15.1",
     "config": "^2.0.1",
     "cron": "^1.4.1",
     "koa": "^2.5.3",
@@ -35,15 +35,15 @@
     "marked": "^0.5.0",
     "marked-sanitizer-github": "^1.0.0",
     "moment": "^2.22.2",
-    "mongoose": "^5.2.17",
+    "mongoose": "^5.3.4",
     "node-fetch": "^2.2.0",
     "numeral": "^2.0.6",
     "octicons": "^8.1.0",
     "pug": "^2.0.0-rc.2",
-    "semver": "^5.5.1"
+    "semver": "^5.6.0"
   },
   "devDependencies": {
-    "eslint": "^5.6.0",
+    "eslint": "^5.7.0",
     "jest": "^23.6.0",
     "jest-extended": "^0.11.0",
     "nodemon": "^1.18.4",
