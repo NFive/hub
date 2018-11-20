@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@octokit/rest": "^15.15.1",
-    "config": "^2.0.1",
+    "config": "^3.0.0",
     "cron": "^1.4.1",
     "koa": "^2.5.3",
     "koa-compress": "^3.0.0",
