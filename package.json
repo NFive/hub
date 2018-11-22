@@ -21,7 +21,7 @@
     "watch-test": "jest --watch --detectOpenHandles"
   },
   "dependencies": {
-    "@octokit/rest": "^15.15.1",
+    "@octokit/rest": "^16.0.1",
     "config": "^2.0.1",
     "cron": "^1.4.1",
     "koa": "^2.5.3",
