@@ -3,8 +3,8 @@ const Plugins = require('../models/plugins');
 
 module.exports = {
 	async view(ctx) {
-		const plugins = await Plugins.find({ owner: ctx.params.owner });
-		const perPage = 5;
+		const plugins = (await Plugins.find({ owner: ctx.params.owner })).filter(r => r.has_release);
+		const perPage = 10;
 		let page = 1;
 		const totalPages = Math.ceil(plugins.length / perPage);
 
