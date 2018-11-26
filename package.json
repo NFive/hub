@@ -20,6 +20,9 @@
     "test": "jest --detectOpenHandles --forceExit",
     "watch-test": "jest --watch --detectOpenHandles"
   },
+  "engines": {
+    "node": ">=10.0.0"
+  },
   "dependencies": {
     "@octokit/rest": "^16.0.1",
     "config": "^2.0.2",
