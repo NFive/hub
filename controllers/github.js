@@ -81,6 +81,10 @@ const update = async () => {
 				readme = marked(await readme.text())
 			}
 
+			if (i.license == null || i.license.key === undefined) {
+				i.license = {key:'unknown'};
+			}
+
 			await Plugins.findOneAndUpdate({ gh_id: i.id },
 				{
 					gh_id: i.id,
