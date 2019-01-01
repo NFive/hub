@@ -35,7 +35,7 @@
     "koa-static-cache": "^5.1.1",
     "koa-views": "^6.1.5",
     "lodash": "^4.17.11",
-    "marked": "^0.5.2",
+    "marked": "^0.6.0",
     "marked-sanitizer-github": "^1.0.0",
     "moment": "^2.23.0",
     "mongoose": "^5.4.1",
