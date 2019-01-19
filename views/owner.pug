@@ -1,11 +1,5 @@
 extends layout
 
-block head
-	meta(property='og:title', content=title)
-	meta(property='og:url', content=url)
-	meta(property='og:image', content=plugins[0].avatar_url)
-
-
 block content
 	header.mb-5
 		a(href='/' + owner).float-left
@@ -40,21 +34,21 @@ block content
 		ul.pagination.justify-content-end
 			if (page == 1)
 				li.page-item.disabled
-					a.page-link(href=urlPage+prev) Previous
+					a.page-link(href=url+prev) Previous
 			else
 				li.page-item
-					a.page-link(href=urlPage+prev) Previous
+					a.page-link(href=url+prev) Previous
 			- var n = 1;
 			while n <= totalPages
 				if n == page
 					li.page-item.active
-						a.page-link(href=urlPage+n)= n++
+						a.page-link(href=url+n)= n++
 				else
 					li.page-item
-						a.page-link(href=urlPage+n)= n++
+						a.page-link(href=url+n)= n++
 			if (next > totalPages)
 				li.page-item.disabled
-					a.page-link(href=urlPage+next) Next
+					a.page-link(href=url+next) Next
 			else
 				li.page-item
-					a.page-link(href=urlPage+next) Next
+					a.page-link(href=url+next) Next

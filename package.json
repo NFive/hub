@@ -24,7 +24,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@octokit/rest": "^16.10.0",
+    "@octokit/rest": "^16.3.0",
     "config": "^3.0.1",
     "cron": "^1.6.0",
     "koa": "^2.6.2",
@@ -38,15 +38,15 @@
     "marked": "^0.6.0",
     "marked-sanitizer-github": "^1.0.0",
     "moment": "^2.23.0",
-    "mongoose": "^5.4.5",
+    "mongoose": "^5.4.1",
     "node-fetch": "^2.3.0",
     "numeral": "^2.0.6",
-    "octicons": "^8.3.0",
+    "octicons": "^8.2.0",
     "pug": "^2.0.3",
     "semver": "^5.6.0"
   },
   "devDependencies": {
-    "eslint": "^5.12.1",
+    "eslint": "^5.11.1",
     "jest": "^23.6.0",
     "jest-extended": "^0.11.0",
     "nodemon": "^1.18.9",
