@@ -1,5 +1,11 @@
 extends layout
 
+block head
+	meta(property='og:title', content=title)
+	meta(property='og:description', content=plugin.description)
+	meta(property='og:url', content=url)
+	meta(property='og:image', content=plugin.avatar_url)
+
 block content
 	div#install-container.float-right.b
 		code(

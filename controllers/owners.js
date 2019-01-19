@@ -21,16 +21,17 @@ module.exports = {
 
 		return await ctx.render('owner', {
 			pretty: config.prettyHtml,
-			title: config.name,
+			title: plugins[0].owner + ' · ' + config.name,
 			owner: plugins[0].owner,
 			plugins: plugins,
 			page: page,
 			totalPlugins: plugins.length,
 			pagedResults: pagedResults,
 			totalPages: totalPages,
-			url: ctx.params.owner + '?page=',
+			urlPage: ctx.params.owner + '?page=',
 			prev: page - 1,
-			next: page + 1
+			next: page + 1,
+			url: ctx.href
 		});
 	}
 };
