@@ -24,10 +24,10 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@octokit/rest": "^16.3.0",
+    "@octokit/rest": "^16.14.0",
     "config": "^3.0.1",
     "cron": "^1.6.0",
-    "koa": "^2.6.2",
+    "koa": "^2.7.0",
     "koa-compress": "^3.0.0",
     "koa-json": "^2.0.2",
     "koa-logger": "^3.0.1",
@@ -37,21 +37,21 @@
     "lodash": "^4.17.11",
     "marked": "^0.6.0",
     "marked-sanitizer-github": "^1.0.0",
-    "moment": "^2.23.0",
-    "mongoose": "^5.4.1",
+    "moment": "^2.24.0",
+    "mongoose": "^5.4.8",
     "node-fetch": "^2.3.0",
     "numeral": "^2.0.6",
-    "octicons": "^8.2.0",
+    "octicons": "^8.3.0",
     "pug": "^2.0.3",
     "semver": "^5.6.0"
   },
   "devDependencies": {
-    "eslint": "^5.11.1",
+    "eslint": "^5.12.1",
     "jest": "^23.6.0",
-    "jest-extended": "^0.11.0",
+    "jest-extended": "^0.11.1",
     "nodemon": "^1.18.9",
     "pug-lint": "^2.3.0",
-    "supertest": "^3.4.1"
+    "supertest": "^3.4.2"
   },
   "jest": {
     "testEnvironment": "node",
