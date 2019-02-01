@@ -1,8 +1,7 @@
 extends layout
 
 block content
-	h1.display-4.text-center Create better FiveM plugins faster with NFive
-
+	h2.text-center Join the growing community of NFive users and developers
 	.card-deck.text-center.my-5
 		.card
 			.card-body
@@ -16,11 +15,38 @@ block content
 			.card-body
 				h4.card-title #{pluginVersions}
 				h5.card-text Released versions
+		.card
+			.card-body
+				h4.card-title #{pluginDevelopers}
+				h5.card-text Developers
 
 	hr
+	h2.text-center.mt-5.mb-3 What is NFive & nfpm?
+	p.text-center NFive is a .NET plugin platform for FiveM. NFive Plugin Manager (nfpm) provides tools for setting up your own FiveM and NFive server in seconds, along with Plugins from the hub or other local and/or remote repositories.
 
-	h2.display-5.text-center.mt-5.mb-3 Most Installed Plugins
+	.card-deck.text-center.my-5
+		.card
+			.card-header Learn
+			.card-body
+				p.card-text New to NFive and nfpm? Start with a walkthrough on server setup
+				p.card-text
+					a(href='https://nfive.io/docs/en/overview') Get Started
 
+		.card
+			.card-header Explore
+			.card-body
+				p.card-text Browse the plugins created and shared by developers using the search bar above or check out some of the examples provided by the NFive Team.
+				p.card-text 
+					a(href='/NFive') NFive
+		.card
+			.card-header Develop
+			.card-body
+				p.card-text Want to get started on making your first NFive plugin? Check our our Guides, Documentation and more!
+				p.card-text 
+					a(href='http://nfive.io/') nfive.io
+
+	hr
+	h2.text-center.mt-5.mb-3 Most installed plugins:
 	.row
 		each plugin in top
 			.col-sm-4

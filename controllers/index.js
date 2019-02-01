@@ -37,6 +37,8 @@ module.exports = {
 				}
 			}]);
 
+			const developers = (await Plugins.distinct('owner')).length
+
 			const top = await Plugins.aggregate([{
 				$unwind: '$releases'
 			}, {
@@ -74,6 +76,7 @@ module.exports = {
 				uniquePlugins: totalPlugins.toLocaleString(),
 				pluginInstalls: installs[0].total.toLocaleString(),
 				pluginVersions: versions[0].total.toLocaleString(),
+				pluginDevelopers: developers.toLocaleString(),
 				top: top.map(p => new Plugins(p)),
 				moment: moment
 			});
