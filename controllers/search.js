@@ -1,6 +1,8 @@
 const config = require('config');
 const Plugins = require('../models/plugins');
 
+const errorPage = require('./error')
+
 module.exports = {
 	async view(ctx) {
 		const perPage = 15;
@@ -10,12 +12,12 @@ module.exports = {
 			page = Number(ctx.query.page);
 		}
 
-		if (!Number.isInteger(page)) return ctx.throw(404, 'Page not found!');
+		if (!Number.isInteger(page)) await errorPage.show(ctx, `${ctx.query.q} not found!`);
 
 		const totalResults = await module.exports.count(ctx.query.q);
 		const totalPages = Math.ceil(totalResults / perPage);
 
-		if (page < 1 || page > totalPages) return ctx.throw(404, 'Page not found!');
+		if (page < 1 || page > totalPages) await errorPage.show(ctx, 'Page not found!');
 
 		const results = await module.exports.search(ctx.query.q, perPage, page);
 
