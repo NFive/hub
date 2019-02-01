@@ -9,7 +9,16 @@ header h1 a {
 	color: black;
 }
 
+header h5 a {
+	line-height: 4.5rem;
+	color: black;
+}
+
 header h1 a:hover {
+	text-decoration: none;
+}
+
+header h5 a:hover {
 	text-decoration: none;
 }
 
