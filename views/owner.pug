@@ -1,5 +1,10 @@
 extends layout
 
+block head
+	meta(property='og:title', content=title)
+	meta(property='og:url', content=url)
+	meta(property='og:image', content=plugins[0].avatar_url)
+
 block content
 	header.mb-5
 		a(href='/' + owner).float-left

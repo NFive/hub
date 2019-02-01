@@ -3,6 +3,8 @@ html(lang='en')
 	head
 		meta(charset='utf-8')
 		meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+		meta(name='description', content='NFive Plugin Hub')
+		meta(name='author', content='NFive')
 		title #{title}
 		link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' integrity='sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO' crossorigin='anonymous')
 		link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/typeahead.js-bootstrap-css/1.2.1/typeaheadjs.min.css' integrity='sha256-ASp4bvLQ21NxBA4wvjJMyb/mZfPm2/HWSCTvQPhg3wE=' crossorigin='anonymous')
@@ -19,8 +21,16 @@ html(lang='en')
 							h1.float-left
 								a(href='/').mr-3
 									img(src='/logo.svg')
-
-						.col-lg-11
+						.col-xlg-1
+							h5.float-left
+								a(href='https://nfive.io/docs/en/overview').mr-2 Documentation
+						.col-xlg-1
+							h5.float-left
+								a(href='https://hub.nfive.io/').mr-2 Plugins
+						.col-xlg-1
+							h5.float-left
+								a(href='https://github.com/NFive').mr-2 Github
+						.col-lg
 							form(action='/search' autocomplete='off')
 								.input-group.mb-3
 									input#search.form-control(name='q' placeholder='Search plugins' type='text' autocomplete='off')
