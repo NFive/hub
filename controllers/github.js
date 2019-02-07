@@ -1,7 +1,9 @@
 const cronjob = require('cron').CronJob
 const config = require('config')
-const rest = require('@octokit/rest')
-const github = new rest()
+const Octokit = require('@octokit/rest')
+const github = new Octokit({
+	auth: `token ${config.github.token}`
+})
 const Plugins = require('../models/plugins')
 const util = require('util')
 const fetch = require('node-fetch')
@@ -27,15 +29,8 @@ new cronjob({
 const update = async () => {
 	util.log('Starting database update....')
 	try {
-		if (config.github.token) {
-			github.authenticate({
-				type: config.github.type,
-				token: config.github.token
-			})
-		}
-
 		var rateLimit = await github.rateLimit.get({})
-		util.log('Limit: %s | Remaining: %s', rateLimit.data.rate.limit, rateLimit.data.rate.remaining)
+		util.log(`Limit: ${rateLimit.data.rate.limit} | Remaining: ${rateLimit.data.rate.remaining}`)
 
 		let result = await github.search.repos({ q: 'topic:nfive-plugin', per_page: 100 });
 
@@ -82,7 +77,7 @@ const update = async () => {
 			}
 
 			if (i.license == null || i.license.key === undefined) {
-				i.license = {key:'unknown'};
+				i.license = { key: 'unknown' };
 			}
 
 			await Plugins.findOneAndUpdate({ gh_id: i.id },
