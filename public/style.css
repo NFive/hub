@@ -26,6 +26,10 @@ header h1 a img {
 	width: 4rem;
 }
 
+header p {
+	height: 1em;
+}
+
 header form {
 	margin-top: 1.25rem;
 	font-family: "Fira Mono","Andale Mono","Consolas",monospace;
