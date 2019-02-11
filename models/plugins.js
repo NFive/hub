@@ -1,12 +1,19 @@
 const mongoose = require('mongoose');
 const lodash = require('lodash');
 
+const Dependency = new mongoose.Schema({
+	plugin: { type: String, require: true},
+	version: { type: String, require: true}
+})
+
 const Release = new mongoose.Schema({
 	tag: { type: String, required: true },
 	downloads: { type: Number, required: true },
 	download_url: { type: String, required: true },
 	notes: String,
 	readme: String,
+	compatible: Boolean,
+	dependencies: [Dependency],
 	created: { type: Date, required: true }
 });
 
