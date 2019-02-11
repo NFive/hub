@@ -201,4 +201,5 @@ const page = async (options) => {
 	return results
 }
 
-(async () => { await update() })()
+// Uncomment to run and update on startup (For testing)
+//(async () => { await update() })()
