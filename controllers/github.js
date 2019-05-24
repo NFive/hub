@@ -1,155 +1,149 @@
-const config = require('config')
-const util = require('util')
-const unparsed = require('koa-body/unparsed.js')
-const yaml = require('js-yaml')
-const marked = require('marked')
-
+const config = require('config');
+const unparsed = require('koa-body/unparsed.js');
+const yaml = require('js-yaml');
+const marked = require('marked');
 const Plugins = require('../models/plugins');
-const Octokit = require('@octokit/rest')
-const octokit = new Octokit({
-    auth: `token ${config.github.token}`
-})
-const Webhooks = require('@octokit/webhooks')
+const { App } = require('@octokit/app');
+const Webhooks = require('@octokit/webhooks');
+const Octokit = require('@octokit/rest');
+
+const app = new App({
+	id: config.github.appId,
+	privateKey: config.github.key
+});
+
 const webhooks = new Webhooks({
-    secret: config.github.secret
-})
+	secret: config.github.secret
+	// log: {
+	// 	debug: console.debug,
+	// 	info: console.info,
+	// 	warn: console.warn,
+	// 	error: console.error
+	// }
+});
+
+const createPlugin = async (data) => {
+	try {
+		const repo = {
+			owner: data.repositories[0].full_name.split('/')[0],
+			repo: data.repositories[0].full_name.split('/')[1]
+		};
+
+
+		// This is how we get an repo installation ID, but we already have it here from the event:
+		// const appClient = new Octokit({
+		// 	auth: `Bearer ${app.getSignedJsonWebToken()}`
+		// });
+
+		// const installation = await appClient.apps.getRepoInstallation({
+		// 	owner: repo.owner,
+		// 	repo: repo.repo
+		// });
+
+		// console.log(installation.data.id);
+
+
+		const client = new Octokit({
+			auth: `token ${await app.getInstallationAccessToken({
+				installationId: data.installation.id
+			})}`
+		});
+
+		const latestRelease = await client.repos.getLatestRelease({
+			owner: repo.owner,
+			repo: repo.repo
+		});
+
+		if (!latestRelease) {
+			console.warn(`${repo.owner}/${repo.repo} has no release, no update occurred`);
+			return;
+		}
+
+		var yml = await client.repos.getContents({
+			owner: repo.owner,
+			repo: repo.repo,
+			path: 'nfive.yml',
+			ref: latestRelease.data.tag_name
+		});
+
+		if (!yml) {
+			console.warn(`${repo.owner}/${repo.repo} error with nfive.yml, no update occurred`);
+			return;
+		}
+
+		const definition = yaml.safeLoad(Buffer.from(yml.data.content, 'base64').toString('utf8'), 'utf8', { json: true });
+
+		var readme = await client.repos.getReadme({
+			owner: repo.owner,
+			repo: repo.repo,
+			ref: latestRelease.data.tag_name
+		});
+
+		if (!readme) {
+			console.warn(`${repo.owner}/${repo.repo} missing README, no update occurred`);
+			return;
+		}
+
+		if (latestRelease.data.tag_name != definition.version) {
+			console.warn(`${repo.owner}/${repo.repo} version doesn't match, no update occurred`);
+			return;
+		}
+
+		await Plugins.create({
+			gh_id: repo.id,
+			owner: definition.name.split('/')[0],
+			project: definition.name.split('/')[1],
+			description: definition.description,
+			releases: [{
+				version: definition.version,
+				download_url: latestRelease.data.assets[0].browser_download_url,
+				notes: latestRelease.data.body,
+				readme: marked(Buffer.from(readme.data.content, 'base64').toString('binary'))
+				//dependencies: dependencies, //Todo
+			}],
+			license: definition.license
+		});
+
+		console.log(`${repo.owner}/${repo.repo} created`);
+	} catch (ex) {
+		console.error(ex);
+	}
+};
 
 exports.webhooks = async (ctx) => {
-    try {
-        await webhooks.verifyAndReceive({
-            id: ctx.request.headers['x-github-delivery'],
-            name: ctx.request.headers['x-github-event'],
-            signature: ctx.request.header['x-hub-signature'],
-            payload: ctx.request.body[unparsed]
-        })
-    } catch (ex) {
-        util.log(ex)
-    }
-}
+	try {
+		webhooks.on('ping', async ({id, name, payload}) => {
+			payload = await JSON.parse(payload);
+			console.log(`[${id} ${name}] received "${payload.zen}"`);
 
-createPlugin = async (input) => {
-    try {
-        var repo = {
-            id: input.id,
-            owner: input.full_name.split("/")[0],
-            project: input.full_name.split("/")[1]
-        }
-        var releases = []
-        const latestRelease = await octokit.repos.getLatestRelease({
-            owner: repo.owner,
-            repo: repo.project
-        })
+			ctx.response.status = 204;
+		});
 
-        if (latestRelease) {
-            var nfiveyml = await octokit.repos.getContents({
-                owner: repo.owner,
-                repo: repo.project,
-                path: 'nfive.yml',
-                ref: latestRelease.data.tag_name
-            })
-            var readme = await octokit.repos.getReadme({
-                owner: repo.owner,
-                repo: repo.project,
-                ref: latestRelease.data.tag_name
-            })
+		webhooks.on('installation', async ({id, name, payload}) => {
+			payload = await JSON.parse(payload);
+			console.log(`[${id} ${name}] action "${payload.action}" on "${payload.repositories[0].full_name}" with installation ID ${payload.installation.id}`);
 
-            if (nfiveyml) {
-                nfiveyml = await Buffer.from(nfiveyml.data.content, 'base64').toString('utf8')
-                nfiveyml = await yaml.safeLoad(nfiveyml, 'utf8', { json: true })
+			await createPlugin(payload);
 
-                if (readme) {
-                    readme = await Buffer.from(readme.data.content, 'base64').toString('binary')
-                    readme = await marked(readme)
+			ctx.response.status = 201;
+		});
 
-                    if (latestRelease.data.tag_name == nfiveyml.version) {
-                        release = {
-                            version: nfiveyml.version,
-                            download_url: latestRelease.data.assets[0].browser_download_url,
-                            notes: latestRelease.data.body,
-                            readme: readme,
-                            //dependencies: dependencies, //Todo
-                        }
-                        await releases.push(release)
+		webhooks.on('release', async ({id, name, payload}) => {
+			payload = await JSON.parse(payload);
+			console.log(`[${id} ${name}] received "${payload.event.name} handler: ${payload.stack}"`);
 
-                        await Plugins.create({
-                            gh_id: repo.id,
-                            owner: nfiveyml.name.split("/")[0],
-                            project: nfiveyml.name.split("/")[1],
-                            description: nfiveyml.description,
-                            releases: releases,
-                            license: nfiveyml.license,
-                        })
-                        console.log(`${input.id} | ${input.full_name} created`)
-                    } else {
-                        console.log(`${input.id} | ${input.full_name} version doesn't match, no update occured`)
-                    }
-                } else {
-                    console.log(`${input.id} | ${input.full_name} missing README.md, no update occured`)
-                }
-            } else {
-                console.log(`${input.id} | ${input.full_name} error with nfive.yml, no update occured`)
-            }
-        } else {
-            console.log(`${input.id} | ${input.full_name} has no release, no update occured`)
-        }
-    } catch (ex) {
-        console.log(ex)
-    }
-}
+			//await updatePlugin(payload);
 
-updatePlugin = async (input) => {
+			ctx.response.status = 204;
+		});
 
-}
-
-startUp = async () => {
-    try {
-        await webhooks.on('installation', async (event) => {
-            const payload = await JSON.parse(event.payload)
-            console.log(`"${event.name}" event received for "${payload.repositories[0].full_name}" | ${payload.repositories[0].id}`)
-
-            await createPlugin(payload.repositories[0])
-        })
-        await webhooks.on('release', async (event) => {
-            const payload = await JSON.parse(event.payload)
-            console.log(`"${event.name}" event received for "${payload.repositories[0].full_name}" | ${payload.repositories[0].id}`)
-
-            //await updatePlugin(payload.repositories[0])
-        })
-        await webhooks.on('error', async (error) => {
-            console.log(`Error occured in "${error.event.name} handler: ${error.stack}"`)
-        })
-    } catch (ex) {
-        util.log(ex)
-    }
-}
-
-(async () => {
-    try {
-        await startUp()
-    } catch (ex) {
-        util.log(ex)
-    }
-
-})()
-
-// const config = require('config')
-// const util = require('util')
-
-// const Octokit = require('@octokit/rest')
-// const App = require('@octokit/app')
-
-// try {
-//     const app = new App({ id: config.github.appId, privateKey: config.github.key })
-//     const jwt = await app.getSignedJsonWebToken()
-//     const octokit = new Octokit({
-//         auth: `bearer ${jwt}`
-//     })
-
-//     const installs = await octokit.apps.listInstallations({})
-//     for (let i of installs.data) {
-//         console.log(i)
-//     }
-
-// } catch (ex) {
-//     util.log(ex)
-// }
+		await webhooks.verifyAndReceive({
+			id: ctx.request.headers['x-github-delivery'],
+			name: ctx.request.headers['x-github-event'],
+			signature: ctx.request.header['x-hub-signature'],
+			payload: ctx.request.body[unparsed]
+		});
+	} catch (ex) {
+		console.error(ex);
+	}
+};
