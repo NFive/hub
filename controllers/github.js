@@ -24,6 +24,7 @@ const webhooks = new Webhooks({
 
 const createPlugin = async (data) => {
 	const repo = {
+		id: data.repositories[0].id,
 		owner: data.repositories[0].full_name.split('/')[0],
 		repo: data.repositories[0].full_name.split('/')[1]
 	};
@@ -68,7 +69,11 @@ const createPlugin = async (data) => {
 		throw new Error(`${repo.owner}/${repo.repo} error with nfive.yml, no update occurred`);
 	}
 
-	const definition = yaml.safeLoad(Buffer.from(yml.data.content, 'base64').toString('utf8'), 'utf8', { json: true });
+	const definition = yaml.safeLoad(Buffer.from(yml.data.content, 'base64').toString('utf8'));
+
+	if (latestRelease.data.tag_name != definition.version) {
+		throw new Error(`${repo.owner}/${repo.repo} version doesn't match, no update occurred`);
+	}
 
 	var readme = await client.repos.getReadme({
 		owner: repo.owner,
@@ -78,10 +83,6 @@ const createPlugin = async (data) => {
 
 	if (!readme) {
 		throw new Error(`${repo.owner}/${repo.repo} missing README, no update occurred`);
-	}
-
-	if (latestRelease.data.tag_name != definition.version) {
-		throw new Error(`${repo.owner}/${repo.repo} version doesn't match, no update occurred`);
 	}
 
 	await Plugins.create({
