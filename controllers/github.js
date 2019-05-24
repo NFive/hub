@@ -77,11 +77,11 @@ const createPlugin = async (data) => {
 		validReleases.push(release);
 	}
 
-	validReleases = validReleases.sort((a, b) => semver.rcompare(a.definition.version, b.definition.version));
-
 	if (validReleases.length < 1) {
 		throw new Error(`${repo.owner}/${repo.repo} has no valid releases, no update occurred`);
 	}
+
+	validReleases = validReleases.sort((a, b) => semver.rcompare(a.definition.version, b.definition.version));
 
 	await Plugins.create({
 		gh_id: repo.id,
