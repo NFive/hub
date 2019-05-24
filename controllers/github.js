@@ -6,6 +6,7 @@ const Plugins = require('../models/plugins');
 const { App } = require('@octokit/app');
 const Webhooks = require('@octokit/webhooks');
 const Octokit = require('@octokit/rest');
+const semver = require('semver');
 
 const app = new App({
 	id: config.github.appId,
@@ -49,58 +50,82 @@ const createPlugin = async (data) => {
 		})}`
 	});
 
-	const latestRelease = await client.repos.getLatestRelease({
+	let releases = await client.repos.listReleases({
 		owner: repo.owner,
 		repo: repo.repo
 	});
 
-	if (!latestRelease) {
+	if (releases.data.length < 1) {
 		throw new Error(`${repo.owner}/${repo.repo} has no release, no update occurred`);
 	}
 
-	var yml = await client.repos.getContents({
-		owner: repo.owner,
-		repo: repo.repo,
-		path: 'nfive.yml',
-		ref: latestRelease.data.tag_name
-	});
+	let validReleases = [];
 
-	if (!yml) {
-		throw new Error(`${repo.owner}/${repo.repo} error with nfive.yml, no update occurred`);
+	for (var release of releases.data) {
+		if (release.draft) continue;
+		if (release.prerelease) continue;
+
+		release.definition = await getDefinition(client, repo, release.tag_name);
+
+		if (release.definition === null) continue;
+		if (repo.owner !== release.definition.name.split('/')[0]) continue;
+		if (repo.repo !== release.definition.name.split('/')[1]) continue;
+		if (release.tag_name !== release.definition.version) continue;
+
+		release.readme = await getReadme(client, repo, release.tag_name);
+
+		validReleases.push(release);
 	}
 
-	const definition = yaml.safeLoad(Buffer.from(yml.data.content, 'base64').toString('utf8'));
+	validReleases = validReleases.sort((a, b) => semver.rcompare(a.definition.version, b.definition.version));
 
-	if (latestRelease.data.tag_name != definition.version) {
-		throw new Error(`${repo.owner}/${repo.repo} version doesn't match, no update occurred`);
-	}
-
-	var readme = await client.repos.getReadme({
-		owner: repo.owner,
-		repo: repo.repo,
-		ref: latestRelease.data.tag_name
-	});
-
-	if (!readme) {
-		throw new Error(`${repo.owner}/${repo.repo} missing README, no update occurred`);
+	if (validReleases.length < 1) {
+		throw new Error(`${repo.owner}/${repo.repo} has no valid releases, no update occurred`);
 	}
 
 	await Plugins.create({
 		gh_id: repo.id,
-		owner: definition.name.split('/')[0],
-		project: definition.name.split('/')[1],
-		description: definition.description,
-		releases: [{
-			version: definition.version,
-			download_url: latestRelease.data.assets[0].browser_download_url,
-			notes: latestRelease.data.body,
-			readme: marked(Buffer.from(readme.data.content, 'base64').toString('binary'))
-			//dependencies: dependencies, //Todo
-		}],
-		license: definition.license
+		owner: repo.owner,
+		project: repo.repo,
+		description: validReleases[0].definition.description,
+		releases: validReleases.map(r => {
+			return {
+				version: r.definition.version,
+				download_url: r.assets[0].browser_download_url,
+				notes: r.body,
+				readme: r.readme,
+				dependencies: [] // TODO
+			};
+		}),
+		license: validReleases[0].definition.license
 	});
 
 	console.log(`${repo.owner}/${repo.repo} created`);
+};
+
+const getDefinition = async (client, repo, ref) => {
+	const definition = await client.repos.getContents({
+		owner: repo.owner,
+		repo: repo.repo,
+		path: 'nfive.yml',
+		ref: ref
+	});
+
+	if (!definition) return null;
+
+	return yaml.safeLoad(Buffer.from(definition.data.content, 'base64').toString('utf8'));
+};
+
+const getReadme = async (client, repo, ref) => {
+	const readme = await client.repos.getReadme({
+		owner: repo.owner,
+		repo: repo.repo,
+		ref: ref
+	});
+
+	if (!readme) return null;
+
+	return marked(Buffer.from(readme.data.content, 'base64').toString('utf8'));
 };
 
 webhooks.on('ping', async ({id, name, payload}) => {
