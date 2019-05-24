@@ -1,12 +1,20 @@
+const config = require('config');
+
 const koa = require('koa');
 const app = new koa();
-const config = require('config');
+const Webhooks = require('@octokit/webhooks')
+const webhooks = new Webhooks({
+    secret: config.github.secret
+})
 const router = require('./router');
 const octicons = require('octicons');
 
 app.keys = config.keys;
 app.proxy = true;
 
+app.use(require('koa-body')({
+	includeUnparsed: true
+}));
 if (process.env.JEST_WORKER_ID == undefined) app.use(require('koa-logger')());
 app.use(require('koa-compress')());
 app.use(require('koa-json')());

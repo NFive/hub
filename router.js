@@ -1,7 +1,9 @@
 const router = require('koa-router')();
+
 const index = require('./controllers/index');
 const search = require('./controllers/search');
 const api = require('./controllers/api');
+const github = require('./controllers/github');
 const owners = require('./controllers/owners');
 const projects = require('./controllers/projects');
 
@@ -14,6 +16,8 @@ router
 	.get('/api/owner/:owner.json', api.owner)
 	.get('/api/project/:owner/:project.json', api.project)
 	.get('/api/version/:owner/:project/:version.json', api.version)
+
+	.post('/github', github.webhooks)
 
 	.get('/:owner', owners.view)
 	.get('/:owner/:project([^@/]+)', projects.view)

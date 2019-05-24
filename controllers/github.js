@@ -1,205 +1,155 @@
-const cronjob = require('cron').CronJob
 const config = require('config')
-const Octokit = require('@octokit/rest')
-const github = new Octokit({
-	auth: `token ${config.github.token}`
-})
-const Plugins = require('../models/plugins')
 const util = require('util')
-const fetch = require('node-fetch')
-const marked = require('marked')
-const sanitizer = require('marked-sanitizer-github').default
+const unparsed = require('koa-body/unparsed.js')
 const yaml = require('js-yaml')
+const marked = require('marked')
 
-marked.setOptions({
-	headerPrefix: 'readme-',
-	sanitize: true,
-	sanitizer: new sanitizer().getSanitizer()
+const Plugins = require('../models/plugins');
+const Octokit = require('@octokit/rest')
+const octokit = new Octokit({
+    auth: `token ${config.github.token}`
+})
+const Webhooks = require('@octokit/webhooks')
+const webhooks = new Webhooks({
+    secret: config.github.secret
 })
 
-new cronjob({
-	start: true,
-	timeZone: 'Etc/UTC',
-	cronTime: '0 * * * *',
-	onTick: async () => {
-		await update()
-		await cleanup()
-	}
-})
-
-const update = async () => {
-	util.log('Starting database update....')
-	try {
-		// Get ratelimit for debug purposes
-		var rateLimit = await github.rateLimit.get({})
-		util.log(`Limit: ${rateLimit.data.rate.limit} | Remaining: ${rateLimit.data.rate.remaining}`)
-
-		// Return all plugins with matching tag
-		let result = await github.search.repos({ q: 'topic:nfive-plugin', per_page: 100 });
-
-		// Loop all returned results to gather info before storing in the database
-		for (let i of result.data.items) {
-			const options = await github.repos.listReleases.endpoint.merge({ owner: i.owner.login, repo: i.name, per_page: 100 })
-			let releases = await page(options)
-			releases = await releases.filter(r => !r.draft && !r.prerelease)
-
-			releases = await Promise.all(
-				releases.map(async r => {
-					let dependencies = []
-					let compatible = false
-					let readme = null
-
-					try {
-						var nfiveyml = await github.repos.getContents({
-							owner: i.owner.login,
-							repo: i.name,
-							path: 'nfive.yml',
-							ref: r.tag_name
-						})
-
-						nfiveyml = await Buffer.from(nfiveyml.data.content, 'base64').toString('utf8')
-						nfiveyml = await yaml.safeLoad(nfiveyml, 'utf8', { json: true })
-
-						if (nfiveyml.dependencies && util.isArray(nfiveyml.dependencies)) {
-							await nfiveyml.dependencies.map(async dependency => {
-								await Object.keys(dependency).forEach(async key => {
-									await dependencies.push({
-										plugin: key,
-										version: dependency[key]
-									})
-								})
-							})
-						} else if (nfiveyml.dependencies) {
-							Object.keys(nfiveyml.dependencies).forEach(async key => {
-								await dependencies.push({
-									plugin: key,
-									version: nfiveyml.dependencies[key]
-								})
-							})
-						}
-
-						compatible = true
-					} catch (ex) {
-						//console.log(ex)
-					}
-
-					try {
-						readme = await github.repos.getReadme({
-							owner: i.owner.login,
-							repo: i.name,
-							ref: r.tag_name
-						})
-
-						readme = await fetch(readme.data.download_url)
-						readme = await marked(await readme.text())
-					} catch (ex) {
-						//console.log(ex)
-					}
-
-					return {
-						tag: r.tag_name,
-						downloads: r.assets[0].download_count,
-						download_url: r.assets[0].browser_download_url,
-						notes: marked(r.body),
-						readme: readme,
-						compatible: compatible,
-						dependencies: dependencies,
-						created: r.published_at
-					}
-				})
-			)
-
-			// Grab the readme from the latest release, if there is a release.
-			let readme
-			if (releases && releases.length) {
-				try {
-					readme = await github.repos.getReadme({
-						owner: i.owner.login,
-						repo: i.name
-					})
-
-					readme = await fetch(readme.data.download_url)
-					readme = await marked(await readme.text())
-				} catch (ex) { }
-			}
-
-			// Set license if one isn't set via the project
-			if (i.license == null || i.license.key === undefined) {
-				i.license = { key: 'unknown' };
-			}
-
-			// Store Plugin in Database
-			await Plugins.findOneAndUpdate({ gh_id: i.id },
-				{
-					gh_id: i.id,
-					owner: i.owner.login,
-					project: i.name,
-					avatar_url: i.owner.avatar_url,
-					homepage_url: i.homepage,
-					description: i.description,
-					counts: {
-						stars: i.stargazers_count,
-						watchers: i.watchers_count,
-						forks: i.forks_count,
-						issues: i.open_issues_count
-					},
-					releases: releases,
-					readme: readme,
-					license: i.license.key,
-					created: i.created_at,
-					scraped: Date.now()
-				},
-				{
-					upsert: true,
-					setDefaultsOnInsert: true
-				}
-			)
-			util.log('id: %s | %s/%s has been saved', i.id, i.owner.login, i.name)
-		}
-		rateLimit = await github.rateLimit.get({})
-		util.log('Limit: %s | Remaining: %s', rateLimit.data.rate.limit, rateLimit.data.rate.remaining)
-	} catch (err) {
-		util.log('Update Error: %s', err)
-	}
+exports.webhooks = async (ctx) => {
+    try {
+        await webhooks.verifyAndReceive({
+            id: ctx.request.headers['x-github-delivery'],
+            name: ctx.request.headers['x-github-event'],
+            signature: ctx.request.header['x-hub-signature'],
+            payload: ctx.request.body[unparsed]
+        })
+    } catch (ex) {
+        util.log(ex)
+    }
 }
 
-const cleanup = async () => {
-	util.log('Starting database cleanup...')
-	try {
+createPlugin = async (input) => {
+    try {
+        var repo = {
+            id: input.id,
+            owner: input.full_name.split("/")[0],
+            project: input.full_name.split("/")[1]
+        }
+        var releases = []
+        const latestRelease = await octokit.repos.getLatestRelease({
+            owner: repo.owner,
+            repo: repo.project
+        })
 
-		// Set the cutoff date to 5 days from now
-		const cutoff = new Date()
-		cutoff.setDate(cutoff.getDate() - 5)
+        if (latestRelease) {
+            var nfiveyml = await octokit.repos.getContents({
+                owner: repo.owner,
+                repo: repo.project,
+                path: 'nfive.yml',
+                ref: latestRelease.data.tag_name
+            })
+            var readme = await octokit.repos.getReadme({
+                owner: repo.owner,
+                repo: repo.project,
+                ref: latestRelease.data.tag_name
+            })
 
-		// Find all plugins that haven't been scraped since the cutoff date
-		const removals = await Plugins.find({
-			scraped: { $lte: cutoff }
-		})
+            if (nfiveyml) {
+                nfiveyml = await Buffer.from(nfiveyml.data.content, 'base64').toString('utf8')
+                nfiveyml = await yaml.safeLoad(nfiveyml, 'utf8', { json: true })
 
-		// Delete all plugins that haven't been scraped since the cutoff date
-		await Plugins.deleteMany({
-			scraped: { $lte: cutoff }
-		})
+                if (readme) {
+                    readme = await Buffer.from(readme.data.content, 'base64').toString('binary')
+                    readme = await marked(readme)
 
-		// Log plugins that were removed
-		for (let i of removals) {
-			util.log('id: %s | %s has been removed', i.gh_id, i.name)
-		}
+                    if (latestRelease.data.tag_name == nfiveyml.version) {
+                        release = {
+                            version: nfiveyml.version,
+                            download_url: latestRelease.data.assets[0].browser_download_url,
+                            notes: latestRelease.data.body,
+                            readme: readme,
+                            //dependencies: dependencies, //Todo
+                        }
+                        await releases.push(release)
 
-	} catch (err) {
-		util.log('Cleanup Error: %s', err)
-	}
+                        await Plugins.create({
+                            gh_id: repo.id,
+                            owner: nfiveyml.name.split("/")[0],
+                            project: nfiveyml.name.split("/")[1],
+                            description: nfiveyml.description,
+                            releases: releases,
+                            license: nfiveyml.license,
+                        })
+                        console.log(`${input.id} | ${input.full_name} created`)
+                    } else {
+                        console.log(`${input.id} | ${input.full_name} version doesn't match, no update occured`)
+                    }
+                } else {
+                    console.log(`${input.id} | ${input.full_name} missing README.md, no update occured`)
+                }
+            } else {
+                console.log(`${input.id} | ${input.full_name} error with nfive.yml, no update occured`)
+            }
+        } else {
+            console.log(`${input.id} | ${input.full_name} has no release, no update occured`)
+        }
+    } catch (ex) {
+        console.log(ex)
+    }
 }
 
-const page = async (options) => {
-	const results = []
+updatePlugin = async (input) => {
 
-	for await (const response of github.paginate.iterator(options)) {
-		results.push(...response.data)
-	}
-
-	return results
 }
 
-// Uncomment to run and update on startup (For testing)
-//(async () => { await update() })()
+startUp = async () => {
+    try {
+        await webhooks.on('installation', async (event) => {
+            const payload = await JSON.parse(event.payload)
+            console.log(`"${event.name}" event received for "${payload.repositories[0].full_name}" | ${payload.repositories[0].id}`)
+
+            await createPlugin(payload.repositories[0])
+        })
+        await webhooks.on('release', async (event) => {
+            const payload = await JSON.parse(event.payload)
+            console.log(`"${event.name}" event received for "${payload.repositories[0].full_name}" | ${payload.repositories[0].id}`)
+
+            //await updatePlugin(payload.repositories[0])
+        })
+        await webhooks.on('error', async (error) => {
+            console.log(`Error occured in "${error.event.name} handler: ${error.stack}"`)
+        })
+    } catch (ex) {
+        util.log(ex)
+    }
+}
+
+(async () => {
+    try {
+        await startUp()
+    } catch (ex) {
+        util.log(ex)
+    }
+
+})()
+
+// const config = require('config')
+// const util = require('util')
+
+// const Octokit = require('@octokit/rest')
+// const App = require('@octokit/app')
+
+// try {
+//     const app = new App({ id: config.github.appId, privateKey: config.github.key })
+//     const jwt = await app.getSignedJsonWebToken()
+//     const octokit = new Octokit({
+//         auth: `bearer ${jwt}`
+//     })
+
+//     const installs = await octokit.apps.listInstallations({})
+//     for (let i of installs.data) {
+//         console.log(i)
+//     }
+
+// } catch (ex) {
+//     util.log(ex)
+// }

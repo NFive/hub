@@ -7,14 +7,12 @@ const Dependency = new mongoose.Schema({
 })
 
 const Release = new mongoose.Schema({
-	tag: { type: String, required: true },
-	downloads: { type: Number, required: true },
+	version: { type: String, required: true },
 	download_url: { type: String, required: true },
 	notes: String,
 	readme: String,
-	compatible: Boolean,
 	dependencies: [Dependency],
-	created: { type: Date, required: true }
+	created: { type: Date, required: true, default: Date.now() }
 });
 
 const Repositories = new mongoose.Schema({
@@ -22,19 +20,9 @@ const Repositories = new mongoose.Schema({
 	owner: { type: String, required: true },
 	project: { type: String, required: true },
 	description: String,
-	readme: String,
 	license: String,
-	avatar_url: String,
-	homepage_url: String,
-	counts: {
-		stars: Number,
-		watchers: Number,
-		forks: Number,
-		issues: Number
-	},
 	releases: [Release],
-	created: { type: Date, required: true },
-	scraped: { type: Date, required: true, default: Date.now() }
+	created: { type: Date, required: true, default: Date.now() }
 });
 
 Repositories.virtual('name').get(function () {
