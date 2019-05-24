@@ -1,6 +1,7 @@
-const app = require('./app');
+
 const config = require('config');
 const util = require('util');
+const app = require('./app');
 require('./db')();
 require('./controllers/github');
 

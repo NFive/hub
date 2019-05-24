@@ -1,13 +1,8 @@
-const config = require('config');
-
 const koa = require('koa');
 const app = new koa();
-const Webhooks = require('@octokit/webhooks')
-const webhooks = new Webhooks({
-    secret: config.github.secret
-})
 const router = require('./router');
 const octicons = require('octicons');
+const config = require('config');
 
 app.keys = config.keys;
 app.proxy = true;
