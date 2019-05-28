@@ -148,15 +148,7 @@ const updatePlugin = async (data) => {
 					readme: release.readme,
 					dependencies: [] // TODO
 				}
-			}
-		}, {
-			upsert: true
-		}
-	)
-
-	await Plugins.findOneAndUpdate(
-		{ gh_id: repo.id },
-		{
+			},
 			$set: {
 				description: project.data.description,
 				avatar_url: project.data.owner.avatar_url,
