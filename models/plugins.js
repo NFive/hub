@@ -22,8 +22,8 @@ const Repositories = new mongoose.Schema({
 	project: { type: String, required: true },
 	description: String,
 	license: String,
-	avatar_url: String,
 	homepage_url: String,
+	avatar_url: String,
 	counts: {
 		stars: Number,
 		watchers: Number,
