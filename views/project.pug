@@ -14,11 +14,11 @@ block content
 				data-trigger='click'
 				data-placement='top'
 			)#install.border.rounded.m-3
-				if plugin.latest_version == release.tag
+				if plugin.latest_version == release.version
 					| nfpm install #{plugin.name}
 					|
 				else
-					| nfpm install #{plugin.name}@#{release.tag}
+					| nfpm install #{plugin.name}@#{release.version}
 					|
 				:icon(size=16) clippy
 
@@ -81,10 +81,10 @@ block content
 						p
 							if plugin.has_release
 
-								a(href=plugin.gh_url + '/releases/tag/' + release.tag)
+								a(href=plugin.gh_url + '/releases/tag/' + release.version)
 									:icon tag
 									|
-									| #{release.tag}
+									| #{release.version}
 							else
 								p Unreleased
 					div.my-3

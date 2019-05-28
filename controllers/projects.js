@@ -16,12 +16,12 @@ module.exports = {
 
 			let releases = plugin.releases;
 			if (plugin.has_release) {
-				releases = releases.sort((a, b) => semver.rcompare(a.tag, b.tag));
+				releases = releases.sort((a, b) => semver.rcompare(a.version, b.version));
 			}
 
 			let selectedRelease = releases[0];
 			if (version) {
-				selectedRelease = plugin.releases.filter(r => r.tag == version)[0];
+				selectedRelease = plugin.releases.filter(r => r.version == version)[0];
 			}
 
 			if (selectedRelease == null) await errorPage.show(ctx, `${plugin.name} version ${version} not found!`);
