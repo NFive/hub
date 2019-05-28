@@ -54,22 +54,22 @@ block content
 		#stats.col-sm-4
 			.row.text-center.mb-3
 				.col-sm-3
-					a(href=plugin.gh_url + '/stargazers')
+					a(href=plugin.gh_url + '/stargazers' target="_blank")
 						:icon(size=24) star
 						|
 						| #{plugin.counts.stars.toLocaleString()}
 				.col-sm-3
-					a(href=plugin.gh_url + '/watchers')
+					a(href=plugin.gh_url + '/watchers' target="_blank")
 						:icon(size=20) eye
 						|
 						| #{plugin.counts.watchers.toLocaleString()}
 				.col-sm-3
-					a(href=plugin.gh_url + '/network/members')
+					a(href=plugin.gh_url + '/network/members' target="_blank")
 						:icon(size=20) repo-forked
 						|
 						| #{plugin.counts.forks.toLocaleString()}
 				.col-sm-3
-					a(href=plugin.gh_url + '/issues')
+					a(href=plugin.gh_url + '/issues' target="_blank")
 						:icon(size=20) issue-opened
 						|
 						| #{plugin.counts.issues.toLocaleString()}
@@ -81,7 +81,7 @@ block content
 						p
 							if plugin.has_release
 
-								a(href=plugin.gh_url + '/releases/tag/' + release.version)
+								a(href=plugin.gh_url + '/releases/tag/' + release.version target="_blank")
 									:icon tag
 									|
 									| #{release.version}
@@ -102,7 +102,7 @@ block content
 							p
 								:icon globe
 								|
-								a(href=plugin.homepage_url) #{new URL(plugin.homepage_url).hostname}
+								a(href=plugin.homepage_url target="_blank") #{new URL(plugin.homepage_url).hostname}
 
 				.col-sm-6
 					div.my-3

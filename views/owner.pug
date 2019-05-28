@@ -17,22 +17,22 @@ block content
 		.row
 			.col-sm-8
 				div.align-middle
-					a(href="/" +  plugin.name) #{plugin.name}
+					a(href="/" +  plugin.name) #{plugin.project}
 			.col-sm-1.text-center
 				div
-					a(href=plugin.gh_url + "/releases/tag/" + plugin.releases[0].version) #{plugin.releases[0].version}
+					a(href=plugin.gh_url + "/releases/tag/" + plugin.releases[plugin.releases.length -1].version target="_blank") #{plugin.releases[plugin.releases.length -1].version}
 					p version
 			.col-sm-1.text-center
 				div
-					a(href=plugin.gh_url + "/stargazers") #{plugin.counts.stars}
+					a(href=plugin.gh_url + "/stargazers" target="_blank") #{plugin.counts.stars}
 					p stars
 			.col-sm-1.text-center
 				div
-					a(href=plugin.gh_url + "/watchers") #{plugin.counts.watchers}
+					a(href=plugin.gh_url + "/watchers" target="_blank") #{plugin.counts.watchers}
 					p watchers
 			.col-sm-1.text-center
 				div
-					a(href="/" +  plugin.name) #{plugin.project_downloads}
+					a(href="/" +  plugin.name target="_blank") #{plugin.project_downloads}
 					p installs
 	hr
 	nav(aria-label='Search Results Pages')
