@@ -27,9 +27,8 @@ const createPlugin = async (data) => {
 	const repo = {
 		id: data.repositories[0].id,
 		owner: data.repositories[0].full_name.split('/')[0],
-		repo: data.repositories[0].full_name.split('/')[1]
+		project: data.repositories[0].full_name.split('/')[1]
 	};
-
 
 	// This is how we get an repo installation ID, but we already have it here from the event:
 	// const appClient = new Octokit({
@@ -38,7 +37,7 @@ const createPlugin = async (data) => {
 
 	// const installation = await appClient.apps.getRepoInstallation({
 	// 	owner: repo.owner,
-	// 	repo: repo.repo
+	// 	repo: repo.project
 	// });
 
 	// console.log(installation.data.id);
@@ -52,11 +51,20 @@ const createPlugin = async (data) => {
 
 	let releases = await client.repos.listReleases({
 		owner: repo.owner,
-		repo: repo.repo
+		repo: repo.project
+	});
+
+	const project = await client.repos.get({
+		owner: repo.owner,
+		repo: repo.project
 	});
 
 	if (releases.data.length < 1) {
-		throw new Error(`${repo.owner}/${repo.repo} has no release, no update occurred`);
+		throw new Error(`${repo.owner}/${repo.project} has no release, no update occurred`);
+	}
+
+	if (project == null) {
+		throw new Error(`Unable to get ${repo.owner}/${repo.project} details, no update occurred`);
 	}
 
 	let validReleases = [];
@@ -69,16 +77,16 @@ const createPlugin = async (data) => {
 
 		if (release.definition === null) continue;
 		if (repo.owner !== release.definition.name.split('/')[0]) continue;
-		if (repo.repo !== release.definition.name.split('/')[1]) continue;
+		if (repo.project !== release.definition.name.split('/')[1]) continue;
 		if (release.tag_name !== release.definition.version) continue;
 
 		release.readme = await getReadme(client, repo, release.tag_name);
-
+		
 		validReleases.push(release);
 	}
 
 	if (validReleases.length < 1) {
-		throw new Error(`${repo.owner}/${repo.repo} has no valid releases, no update occurred`);
+		throw new Error(`${repo.owner}/${repo.project} has no valid releases, no update occurred`);
 	}
 
 	validReleases = validReleases.sort((a, b) => semver.rcompare(a.definition.version, b.definition.version));
@@ -86,12 +94,21 @@ const createPlugin = async (data) => {
 	await Plugins.create({
 		gh_id: repo.id,
 		owner: repo.owner,
-		project: repo.repo,
+		project: repo.project,
 		description: validReleases[0].definition.description,
+		homepage_url: project.data.html_url,
+		avatar_url: project.data.owner.avatar_url,
+		counts: {
+			stars: project.data.stargazers_count,
+			watchers: project.data.watchers_count,
+			forks: project.data.forks_count,
+			issues: project.data.open_issues_count
+		},
 		releases: validReleases.map(r => {
 			return {
 				version: r.definition.version,
 				download_url: r.assets[0].browser_download_url,
+				downloads: r.assets[0].download_count,
 				notes: r.body,
 				readme: r.readme,
 				dependencies: [] // TODO
@@ -100,13 +117,13 @@ const createPlugin = async (data) => {
 		license: validReleases[0].definition.license
 	});
 
-	console.log(`${repo.owner}/${repo.repo} created`);
+	console.log(`${repo.owner}/${repo.project} created`);
 };
 
 const getDefinition = async (client, repo, ref) => {
 	const definition = await client.repos.getContents({
 		owner: repo.owner,
-		repo: repo.repo,
+		repo: repo.project,
 		path: 'nfive.yml',
 		ref: ref
 	});
@@ -119,7 +136,7 @@ const getDefinition = async (client, repo, ref) => {
 const getReadme = async (client, repo, ref) => {
 	const readme = await client.repos.getReadme({
 		owner: repo.owner,
-		repo: repo.repo,
+		repo: repo.project,
 		ref: ref
 	});
 

@@ -9,6 +9,7 @@ const Dependency = new mongoose.Schema({
 const Release = new mongoose.Schema({
 	version: { type: String, required: true },
 	download_url: { type: String, required: true },
+	downloads: { type: Number },
 	notes: String,
 	readme: String,
 	dependencies: [Dependency],
@@ -21,6 +22,14 @@ const Repositories = new mongoose.Schema({
 	project: { type: String, required: true },
 	description: String,
 	license: String,
+	avatar_url: String,
+	homepage_url: String,
+	counts: {
+		stars: Number,
+		watchers: Number,
+		forks: Number,
+		issues: Number
+	},
 	releases: [Release],
 	created: { type: Date, required: true, default: Date.now() }
 });
@@ -38,7 +47,7 @@ Repositories.virtual('has_release').get(function () {
 	return this.releases && this.releases.length;
 });
 Repositories.virtual('latest_version').get(function () {
-	return this.releases[0].tag;
+	return this.releases[0].version;
 });
 Repositories.virtual('has_readme').get(function () {
 	return this.has_releases && this.releases.readme == null;
