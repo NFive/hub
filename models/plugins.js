@@ -9,6 +9,8 @@ const Dependency = new mongoose.Schema({
 const Release = new mongoose.Schema({
 	version: { type: String, required: true },
 	download_url: { type: String, required: true },
+	compatible: { type: Boolean, required: true, default: true }, //TODO Remove `default: true` when capable of detecing NFive compatibility
+	exists: { type: Boolean, require: true },
 	downloads: { type: Number },
 	notes: String,
 	readme: String,
@@ -31,7 +33,8 @@ const Repositories = new mongoose.Schema({
 		issues: Number
 	},
 	releases: [Release],
-	created: { type: Date, required: true, default: Date.now() }
+	created: { type: Date, required: true, default: Date.now() },
+	deleted: { type: Date, default: null }
 });
 
 Repositories.virtual('name').get(function () {

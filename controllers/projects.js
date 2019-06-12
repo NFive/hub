@@ -20,7 +20,7 @@ module.exports = {
 			}
 
 			let selectedRelease = releases[0];
-			if (version) {
+			if (version && version !== "*") {
 				selectedRelease = plugin.releases.filter(r => r.version == version)[0];
 			}
 
@@ -35,6 +35,7 @@ module.exports = {
 				plugin: plugin,
 				release: selectedRelease,
 				releases: releases,
+				dependencies: selectedRelease.dependencies,
 				moment: moment
 			});
 		} catch (ex) {

@@ -115,8 +115,9 @@ module.exports = {
 			readme: project.readme,
 			versions: project.releases.map(p => {
 				return {
-					download_url: p.download_url
 					version: p.version,
+					download_url: p.download_url,
+					dependencies: p.dependencies
 				};
 			}),
 			scraped: project.scraped

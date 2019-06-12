@@ -1,0 +1,9 @@
+if dependencies[0]
+    each dependency in dependencies
+        .list-group.markdown
+            a.list-group-item.list-group-item-action.flex-column.align-items-start(href=`/${dependency.plugin}@*`)
+                .d-flex.w-100.justify-content-between
+                    h5.mb-1 #{dependency.plugin}@#{dependency.version}
+else
+    h2.text-center No Dependencies
+    
