@@ -68,7 +68,7 @@ module.exports = {
 					readme: r.readme,
 					versions: r.releases.map(p => {
 						return {
-							version: p.tag,
+							version: p.version,
 							download_url: p.download_url
 						};
 					}),
@@ -115,8 +115,8 @@ module.exports = {
 			readme: project.readme,
 			versions: project.releases.map(p => {
 				return {
-					version: p.tag,
 					download_url: p.download_url
+					version: p.version,
 				};
 			}),
 			scraped: project.scraped
@@ -124,17 +124,17 @@ module.exports = {
 	},
 
 	async version(ctx) {
-		const version = await Plugins.findOne({ owner: ctx.params.owner, project: ctx.params.project, 'releases.tag': ctx.params.version });
+		const version = await Plugins.findOne({ owner: ctx.params.owner, project: ctx.params.project, 'releases.version': ctx.params.version });
 		if (version == null) return ctx.throw(404, 'version not found', {
 			owner: ctx.params.owner,
 			project: ctx.params.project,
 			version: ctx.params.version
 		});
 
-		version.release = version.releases.filter(r => r.tag == ctx.params.version)[0];
+		version.release = version.releases.filter(r => r.version == ctx.params.version)[0];
 
 		ctx.body = {
-			name: version.name + '@' + version.release.tag,
+			name: version.name + '@' + version.release.version,
 			owner: version.owner,
 			project: version.project,
 			license: version.release.license, // TODO
