@@ -7,6 +7,7 @@ const { App } = require('@octokit/app');
 const Webhooks = require('@octokit/webhooks');
 const Octokit = require('@octokit/rest');
 const semver = require('semver');
+const util = require('util')
 
 const app = new App({
 	id: config.github.appId,
@@ -99,7 +100,7 @@ const createPlugin = async (data) => {
 				downloads: r.assets[0].download_count,
 				notes: r.body,
 				readme: r.readme,
-				dependencies: [] // TODO
+				dependencies: r.dependencies
 			};
 		}),
 		license: project.data.license
@@ -146,7 +147,7 @@ const updatePlugin = async (data) => {
 					downloads: release.assets[0].download_count,
 					notes: release.body,
 					readme: release.readme,
-					dependencies: [] // TODO
+					dependencies: release.dependencies
 				}
 			},
 			$set: {
@@ -182,6 +183,8 @@ const validateReleases = async (client, repo, release) => {
 
 	release.readme = await getReadme(client, repo, release.tag_name);
 
+	release.dependencies = await getDependencies(release.definition.dependencies)
+
 	return release
 }
 
@@ -209,6 +212,30 @@ const getReadme = async (client, repo, ref) => {
 
 	return marked(Buffer.from(readme.data.content, 'base64').toString('utf8'));
 };
+
+const getDependencies = async (dependencies) => {
+	var output = [];
+
+	if (dependencies && util.isArray(dependencies)) {
+		await dependencies.map(async dependency => {
+			await Object.keys(dependency).forEach(async key => {
+				await output.push({
+					plugin: key,
+					version: dependency[key]
+				});
+			});
+		});
+	} else if (dependencies) {
+		Object.keys(dependencies).forEach(async key => {
+			await output.push({
+				plugin: key,
+				version: dependencies[key]
+			});
+		});
+	};
+
+	return output;
+}
 
 webhooks.on('ping', async ({ id, name, payload }) => {
 	payload = await JSON.parse(payload);
