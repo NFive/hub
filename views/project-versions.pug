@@ -1,9 +1,9 @@
 each release in releases
 	.list-group.markdown
-			a.list-group-item.list-group-item-action.flex-column.align-items-start(href='/' + plugin.name + '@' + release.version)
-				.d-flex.w-100.justify-content-between
-					h5.mb-1 #{release.version}
-					small
-						time(datetime=moment(release.created).format('YYYY-MM-DD') title=moment(release.created).format('YYYY-MM-DD')) #{moment(release.created).fromNow()}
-				p.mb-1
-					!= release.notes
+		a.list-group-item.list-group-item-action.flex-column.align-items-start(href='/' + plugin.name + '@' + release.version)
+			.d-flex.w-100.justify-content-between
+				h5.mb-1 #{release.version}
+				small
+					time(datetime=moment(release.created).format('YYYY-MM-DD') title=moment(release.created).format('YYYY-MM-DD')) #{moment(release.created).fromNow()}
+			p.mb-1
+				!= release.notes
