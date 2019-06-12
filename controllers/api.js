@@ -113,14 +113,25 @@ module.exports = {
 			downloads: project.project_downloads,
 			description: project.description,
 			readme: project.readme,
-			versions: project.releases.map(p => {
+			versions: project.releases.map(v => {
 				return {
-					version: p.version,
-					download_url: p.download_url,
-					dependencies: p.dependencies
+					version: v.version,
+					compatible: v.compatible,
+					download_url: v.download_url,
+					dependencies: v.dependencies.map(d => {
+						return {
+							plugin: d.plugin,
+							version: d.version
+						}
+					}),
+					createdAt: v.createdAt,
+					updatedAt: v.updatedAt,
+					deletedAt: v.deletedAt
 				};
 			}),
-			scraped: project.scraped
+			createdAt: project.createdAt,
+			updatedAt: project.updatedAt,
+			deletedAt: project.deletedAt
 		};
 	},
 
