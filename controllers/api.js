@@ -143,7 +143,7 @@ module.exports = {
 			notes: version.release.readme,
 			readme: version.release.readme,
 			download_url: version.release.download_url,
-			published: version.release.created,
+			published: version.release.createdAt,
 			scraped: version.scraped
 		};
 	}

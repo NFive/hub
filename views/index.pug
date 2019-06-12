@@ -59,5 +59,5 @@ block content
 							h4.text-truncate #{plugin.name}
 						div.text-truncate= plugin.description
 						small #{plugin.releases[0].tag} released
-							time(datetime=moment(plugin.releases[0].created).format('YYYY-MM-DD') title=moment(plugin.releases[0].created).format('YYYY-MM-DD')) #{moment(plugin.releases[0].created).fromNow()}
+							time(datetime=moment(plugin.releases[0].createdAt).format('YYYY-MM-DD') title=moment(plugin.releases[0].createdAt).format('YYYY-MM-DD')) #{moment(plugin.releases[0].createdAt).fromNow()}
 

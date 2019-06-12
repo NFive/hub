@@ -93,7 +93,7 @@ block content
 							p
 								:icon clock
 								|
-								time(datetime=moment(release.created).format('YYYY-MM-DD') title=moment(release.created).format('YYYY-MM-DD')) #{moment(release.created).fromNow()}
+								time(datetime=moment(release.createdAt).format('YYYY-MM-DD') title=moment(release.createdAt).format('YYYY-MM-DD')) #{moment(release.createdAt).fromNow()}
 						else
 							p Unreleased
 					if plugin.homepage_url
@@ -115,9 +115,9 @@ block content
 						h4 created
 						if plugin.has_release
 							p
-								time(datetime=moment(plugin.created).format('YYYY-MM-DD') title=moment(plugin.created).format('YYYY-MM-DD')) #{moment(plugin.created).fromNow()}
+								time(datetime=moment(plugin.createdAt).format('YYYY-MM-DD') title=moment(plugin.createdAt).format('YYYY-MM-DD')) #{moment(plugin.createdAt).fromNow()}
 						else
-							p moment(plugin.created).fromNow()
+							p moment(plugin.createdAt).fromNow()
 					div.my-3
 						h4 license
 						p #{plugin.license}

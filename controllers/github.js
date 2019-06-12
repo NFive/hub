@@ -100,10 +100,12 @@ const createPlugin = async (data) => {
 				downloads: r.assets[0].download_count,
 				notes: r.body,
 				readme: r.readme,
-				dependencies: r.dependencies
+				dependencies: r.dependencies,
+				createdAt: r.published_at
 			};
 		}),
-		license: project.data.license
+		license: project.data.license,
+		createdAt: project.data.created_at
 	});
 
 	console.log(`${repo.owner}/${repo.project} created`);
@@ -147,7 +149,8 @@ const updatePlugin = async (data) => {
 					downloads: release.assets[0].download_count,
 					notes: release.body,
 					readme: release.readme,
-					dependencies: release.dependencies
+					dependencies: release.dependencies,
+					createdAt: release.published_at
 				}
 			},
 			$set: {
@@ -159,7 +162,8 @@ const updatePlugin = async (data) => {
 					forks: project.data.forks_count,
 					issues: project.data.open_issues_count
 				},
-				license: project.data.license
+				license: project.data.license,
+				updatedAt: project.data.updated_at
 			}
 		}, {
 			upsert: true
