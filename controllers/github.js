@@ -111,6 +111,24 @@ const createPlugin = async (data) => {
 	console.log(`${repo.owner}/${repo.project} created`);
 };
 
+const deletePlugin = async (data) => {
+	const repo = {
+		id: data.repository.id,
+		owner: data.repository.full_name.split('/')[0],
+		project: data.repository.full_name.split('/')[1]
+	};
+
+	await Plugins.findOneAndUpdate(
+		{ gh_id: repo.id },
+		{
+			$set: {
+				deletedAt: Date.now()
+			}
+		}
+	)
+	console.log(`${repo.owner}/${repo.project} deleted.`);
+}
+
 const updatePlugin = async (data) => {
 	const repo = {
 		id: data.repository.id,
@@ -119,9 +137,7 @@ const updatePlugin = async (data) => {
 	};
 
 	const client = new Octokit({
-		auth: `token ${await app.getInstallationAccessToken({
-			installationId: data.installation.id
-		})}`
+		auth: `token ${await app.getInstallationAccessToken({installationId: data.installation.id})}`
 	});
 
 	const project = await client.repos.get({
@@ -154,6 +170,8 @@ const updatePlugin = async (data) => {
 				}
 			},
 			$set: {
+				owner: repo.owner,
+				project: repo.project,
 				description: project.data.description,
 				avatar_url: project.data.owner.avatar_url,
 				counts: {
@@ -173,8 +191,34 @@ const updatePlugin = async (data) => {
 	console.log(`${repo.owner}/${repo.project} updated, ${data.release.tag_name} added to releases`);
 }
 
-const validateReleases = async (client, repo, release) => {
+const deleteRelease = async (data) => {
+	const repo = {
+		id: data.repository.id,
+		owner: data.repository.full_name.split('/')[0],
+		project: data.repository.full_name.split('/')[1]
+	};
 
+	const client = new Octokit({
+		auth: `token ${await app.getInstallationAccessToken({installationId: data.installation.id})}`
+	});
+
+	const release = await validateReleases(client, repo, data.release);
+
+	if (!release) {
+		throw new Error(`${repo.owner}/${repo.project} release(${data.release.tag_name}) isn't valid, no deletion occurred`);
+	}
+
+	await Plugins.findOneAndUpdate(
+		{ 'gh_id': repo.id, 'releases.version': release.tag_name }, 
+		{
+			$set: { 'releases.$.deletedAt': Date.now() }
+		}, {
+			upsert: true
+		}
+	)
+}
+
+const validateReleases = async (client, repo, release) => {
 	if (release.draft) return null;
 	if (release.prerelease) return null;
 
@@ -249,16 +293,18 @@ webhooks.on('ping', async ({ id, name, payload }) => {
 webhooks.on('installation', async ({ id, name, payload }) => {
 	payload = await JSON.parse(payload);
 	console.log(`[${id} ${name}] action "${payload.action}" on "${payload.repositories[0].full_name}" with installation ID ${payload.installation.id}`);
-
-	await createPlugin(payload);
+	if (payload.action == 'created') await createPlugin(payload);
+	//else if (payload.action == 'deleted') await deletePlugin(payload); //TODO For some reason deleting the repository before uninstalling the app causes it not to report what repository was deleted -____-
 });
+
+webhooks.on('')
 
 webhooks.on('release', async ({ id, name, payload }) => {
 	payload = await JSON.parse(payload);
 	console.log(`[${id} ${name}] action "${payload.action}" on "${payload.repository.full_name}"`);
-	if (payload.action == 'published') {
-		await updatePlugin(payload);
-	}
+	if (payload.action == 'published') await updatePlugin(payload);
+	//else if (payload.action == 'edited') await updatePlugin(payload); //TODO Update Release when it's edited
+	else if (payload.action == 'deleted') await deleteRelease(payload);
 });
 
 exports.webhooks = async (ctx) => {
