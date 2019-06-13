@@ -59,7 +59,9 @@ describe('api', () => {
 			expect(res.body.name).toBe('NFive');
 			expect(res.body.avatar).toBeString();
 			expect(res.body.gh_url).toBeString();
-			expect(await new Date(res.body.scraped)).toBeDate();
+			expect(await new Date(res.body.createdAt)).toBeDate();
+			expect(await new Date(res.body.updatedAt)).toBeDate();
+			expect(await new Date(res.body.deletedAt)).toBeDate();
 		});
 	});
 

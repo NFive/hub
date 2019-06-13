@@ -24,8 +24,8 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@octokit/app": "^3.0.0",
-    "@octokit/rest": "^16.26.0",
+    "@octokit/app": "^3.0.1",
+    "@octokit/rest": "^16.28.1",
     "@octokit/webhooks": "^6.2.1",
     "config": "^3.1.0",
     "cron": "^1.7.1",
@@ -42,19 +42,19 @@
     "marked": "^0.6.2",
     "marked-sanitizer-github": "^1.0.0",
     "moment": "^2.24.0",
-    "mongoose": "^5.5.9",
+    "mongoose": "^5.5.15",
     "node-fetch": "^2.6.0",
     "numeral": "^2.0.6",
     "octicons": "^8.5.0",
     "pug": "^2.0.3",
-    "semver": "^6.0.0",
+    "semver": "^6.1.1",
     "supertest": "^4.0.2"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
     "jest": "^24.8.0",
     "jest-extended": "^0.11.1",
-    "nodemon": "^1.19.0",
+    "nodemon": "^1.19.1",
     "pug-lint": "^2.3.0"
   },
   "jest": {

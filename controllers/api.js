@@ -94,7 +94,9 @@ module.exports = {
 			name: owner.owner,
 			avatar: owner.avatar_url,
 			gh_url: 'https://github.com/' + owner.owner,
-			scraped: owner.scraped
+			createdAt: owner.createdAt,
+			updatedAt: owner.updatedAt,
+			deletedAt: owner.deletedAt
 		};
 	},
 
@@ -154,8 +156,9 @@ module.exports = {
 			notes: version.release.readme,
 			readme: version.release.readme,
 			download_url: version.release.download_url,
-			published: version.release.createdAt,
-			scraped: version.scraped
+			createdAt: version.release.createdAt,
+			updatedAt: version.release.updatedAt,
+			deletedAt: version.release.deletedAt
 		};
 	}
 };
