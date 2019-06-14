@@ -21,10 +21,11 @@ const Release = new mongoose.Schema({
 
 const Repositories = new mongoose.Schema({
 	gh_id: { type: Number, required: true, unique: true },
+	install_id: { type: Number, required: true, unique: true},
 	owner: { type: String, required: true },
 	project: { type: String, required: true },
 	description: String,
-	license: String,
+	license: String, // TODO Parse SPDX to array of licenses
 	homepage_url: String,
 	avatar_url: String,
 	counts: {
