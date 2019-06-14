@@ -43,11 +43,8 @@ const createPlugin = async (data) => {
 
 	// console.log(installation.data.id);
 
-
 	const client = new Octokit({
-		auth: `token ${await app.getInstallationAccessToken({
-			installationId: data.installation.id
-		})}`
+		auth: `token ${await app.getInstallationAccessToken({ installationId: data.installation.id })}`
 	});
 
 	let releases = await client.repos.listReleases({
@@ -63,29 +60,26 @@ const createPlugin = async (data) => {
 	if (releases.data.length < 1) {
 		throw new Error(`${repo.owner}/${repo.project} has no release, no update occurred`);
 	}
-
 	if (project == null) {
 		throw new Error(`Unable to get ${repo.owner}/${repo.project} details, no update occurred`);
 	}
 
 	let validReleases = []
-
 	for (var release of releases.data) {
 		const result = await validateReleases(client, repo, release);
 		if (result) validReleases.push(result)
 	}
-
 	if (validReleases.length < 1) {
 		throw new Error(`${repo.owner}/${repo.project} has no valid releases, no update occurred`);
 	}
-
 	validReleases = validReleases.sort((a, b) => semver.compare(a.definition.version, b.definition.version));
 
 	await Plugins.create({
 		gh_id: repo.id,
+		install_id: data.installation.id,
 		owner: repo.owner,
 		project: repo.project,
-		description: project.data.description,
+		description: validReleases[validReleases.length - 1].definition.description,
 		avatar_url: project.data.owner.avatar_url,
 		counts: {
 			stars: project.data.stargazers_count,
@@ -104,7 +98,7 @@ const createPlugin = async (data) => {
 				createdAt: r.published_at
 			};
 		}),
-		license: project.data.license,
+		license: validReleases[validReleases.length - 1].definition.license,
 		createdAt: project.data.created_at
 	});
 
@@ -119,7 +113,7 @@ const deletePlugin = async (data) => {
 	};
 
 	await Plugins.findOneAndUpdate(
-		{ gh_id: repo.id },
+		{ install_id: data.installation.id },
 		{
 			$set: {
 				deletedAt: Date.now()
@@ -160,7 +154,7 @@ const updatePlugin = async (data) => {
 		{
 			$push: {
 				releases: {
-					version: release.tag_name,
+					version: release.version,
 					download_url: release.assets[0].browser_download_url,
 					downloads: release.assets[0].download_count,
 					notes: release.body,
@@ -172,7 +166,7 @@ const updatePlugin = async (data) => {
 			$set: {
 				owner: repo.owner,
 				project: repo.project,
-				description: project.data.description,
+				description: release.definition.description,
 				avatar_url: project.data.owner.avatar_url,
 				counts: {
 					stars: project.data.stargazers_count,
@@ -180,7 +174,7 @@ const updatePlugin = async (data) => {
 					forks: project.data.forks_count,
 					issues: project.data.open_issues_count
 				},
-				license: project.data.license,
+				license: release.definition.license,
 				updatedAt: project.data.updated_at
 			}
 		}, {
@@ -209,7 +203,7 @@ const deleteRelease = async (data) => {
 	}
 
 	await Plugins.findOneAndUpdate(
-		{ 'gh_id': repo.id, 'releases.version': release.tag_name }, 
+		{ 'install_id': data.installation.id, 'releases.version': release.tag_name }, 
 		{
 			$set: { 'releases.$.deletedAt': Date.now() }
 		}, {
