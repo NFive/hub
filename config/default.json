@@ -8,6 +8,8 @@
   "prettyHtml": true,
   "cacheAge": 86400,
   "github": {
-    "token": ""
+    "secret": "",
+    "appId": ,
+    "key": ""
   }
 }
