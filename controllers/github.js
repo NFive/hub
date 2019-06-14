@@ -286,27 +286,32 @@ const getDependencies = async (dependencies) => {
 }
 
 webhooks.on('ping', async ({ id, name, payload }) => {
-	payload = await JSON.parse(payload);
-	console.log(`[${id} ${name}] received "${payload.zen}"`);
+	console.log(`[${id} | ${name}] received "${payload.zen}"`);
 });
 
-webhooks.on('installation', async ({ id, name, payload }) => {
-	payload = await JSON.parse(payload);
-	console.log(`[${id} ${name}] action "${payload.action}" on "${payload.repositories[0].full_name}" with installation ID ${payload.installation.id}`);
-	if (payload.action == 'created') await createPlugin(payload);
-	//else if (payload.action == 'deleted') await deletePlugin(payload); //TODO For some reason deleting the repository before uninstalling the app causes it not to report what repository was deleted -____-
+webhooks.on('installation.created', async ({ id, name, payload }) => {
+	console.log(`[${id} | ${name}] action "${payload.action}" on "${payload.repositories[0].full_name}" with installation ID ${payload.installation.id}`);
+	await createPlugin(payload);
 });
 
-webhooks.on('release', async ({ id, name, payload }) => {
-	payload = await JSON.parse(payload);
-	console.log(`[${id} ${name}] action "${payload.action}" on "${payload.repository.full_name}"`);
-	if (payload.action == 'published') await updatePlugin(payload);
-	//else if (payload.action == 'edited') await updatePlugin(payload); //TODO Update Release when it's edited
-	else if (payload.action == 'deleted') await deleteRelease(payload);
+webhooks.on('installation.deleted', async ({ id, name, payload }) => {
+	console.log(`[${id} | ${name}] action "${payload.action}" on installation ID ${payload.installation.id}`);
+	await deletePlugin(payload);
+})
+
+webhooks.on('release.published', async ({ id, name, payload }) => {
+	console.log(`[${id} | ${name}] action "${payload.action}" on "${payload.repository.full_name}"`);
+	await updatePlugin(payload);
 });
 
-webhooks.on('*', async ({ id, name, payload }) => {
-	console.log(`[${id} ${name}] action "${payload.action}" \n${payload}`);
+webhooks.on('release.edited', async ({ id, name, payload }) => {
+	console.log(`[${id} | ${name}] action "${payload.action}" on "${payload.repository.full_name}"`);
+	await updatePlugin(payload);
+});
+
+webhooks.on('release.deleted', async ({ id, name, payload }) => {
+	console.log(`[${id} | ${name}] action "${payload.action}" on "${payload.repository.full_name}"`);
+	await deleteRelease(payload);
 });
 
 exports.webhooks = async (ctx) => {
@@ -315,7 +320,7 @@ exports.webhooks = async (ctx) => {
 			id: ctx.request.headers['x-github-delivery'],
 			name: ctx.request.headers['x-github-event'],
 			signature: ctx.request.header['x-hub-signature'],
-			payload: ctx.request.body[unparsed]
+			payload: JSON.parse(ctx.request.body[unparsed])
 		});
 
 		ctx.status = 200;
