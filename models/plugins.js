@@ -4,12 +4,12 @@ const lodash = require('lodash');
 const Dependency = new mongoose.Schema({
 	plugin: { type: String, require: true},
 	version: { type: String, require: true}
-})
+});
 
 const Release = new mongoose.Schema({
 	version: { type: String, required: true },
 	download_url: { type: String, required: true },
-	compatible: { type: Boolean, required: true, default: true }, //TODO Remove `default: true` when capable of detecing NFive compatibility
+	compatible: { type: Boolean, required: true, default: true }, //TODO Remove `default: true` when capable of detecting NFive compatibility
 	downloads: { type: Number },
 	notes: String,
 	readme: String,

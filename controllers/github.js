@@ -1,3 +1,4 @@
+/* eslint-disable require-atomic-updates */
 const config = require('config');
 const unparsed = require('koa-body/unparsed.js');
 const yaml = require('js-yaml');
@@ -7,7 +8,7 @@ const { App } = require('@octokit/app');
 const Webhooks = require('@octokit/webhooks');
 const Octokit = require('@octokit/rest');
 const semver = require('semver');
-const util = require('util')
+const util = require('util');
 
 const app = new App({
 	id: config.github.appId,
@@ -64,10 +65,10 @@ const createPlugin = async (data) => {
 		throw new Error(`Unable to get ${repo.owner}/${repo.project} details, no update occurred`);
 	}
 
-	let validReleases = []
+	let validReleases = [];
 	for (var release of releases.data) {
 		const result = await validateReleases(client, repo, release);
-		if (result) validReleases.push(result)
+		if (result) validReleases.push(result);
 	}
 	if (validReleases.length < 1) {
 		throw new Error(`${repo.owner}/${repo.project} has no valid releases, no update occurred`);
@@ -119,9 +120,9 @@ const deletePlugin = async (data) => {
 				deletedAt: Date.now()
 			}
 		}
-	)
+	);
 	console.log(`${repo.owner}/${repo.project} deleted.`);
-}
+};
 
 const updatePlugin = async (data) => {
 	const repo = {
@@ -180,10 +181,10 @@ const updatePlugin = async (data) => {
 		}, {
 			upsert: true
 		}
-	)
+	);
 
 	console.log(`${repo.owner}/${repo.project} updated, ${data.release.tag_name} added to releases`);
-}
+};
 
 const deleteRelease = async (data) => {
 	const repo = {
@@ -202,15 +203,18 @@ const deleteRelease = async (data) => {
 		throw new Error(`${repo.owner}/${repo.project} release(${data.release.tag_name}) isn't valid, no deletion occurred`);
 	}
 
-	await Plugins.findOneAndUpdate(
-		{ 'install_id': data.installation.id, 'releases.version': release.tag_name }, 
-		{
-			$set: { 'releases.$.deletedAt': Date.now() }
-		}, {
-			upsert: true
+	await Plugins.findOneAndUpdate({
+		'install_id': data.installation.id,
+		'releases.version': release.tag_name
+	},
+	{
+		$set: {
+			'releases.$.deletedAt': Date.now()
 		}
-	)
-}
+	}, {
+		upsert: true
+	});
+};
 
 const validateReleases = async (client, repo, release) => {
 	if (release.draft) return null;
@@ -225,10 +229,10 @@ const validateReleases = async (client, repo, release) => {
 
 	release.readme = await getReadme(client, repo, release.tag_name);
 
-	release.dependencies = await getDependencies(release.definition.dependencies)
+	release.dependencies = await getDependencies(release.definition.dependencies);
 
-	return release
-}
+	return release;
+};
 
 const getDefinition = async (client, repo, ref) => {
 	const definition = await client.repos.getContents({
@@ -274,10 +278,10 @@ const getDependencies = async (dependencies) => {
 				version: dependencies[key]
 			});
 		});
-	};
+	}
 
 	return output;
-}
+};
 
 webhooks.on('ping', async ({ id, name, payload }) => {
 	console.log(`[${id} | ${name}] received "${payload.zen}"`);
@@ -291,7 +295,7 @@ webhooks.on('installation.created', async ({ id, name, payload }) => {
 webhooks.on('installation.deleted', async ({ id, name, payload }) => {
 	console.log(`[${id} | ${name}] action "${payload.action}" on installation ID ${payload.installation.id}`);
 	await deletePlugin(payload);
-})
+});
 
 webhooks.on('release.published', async ({ id, name, payload }) => {
 	console.log(`[${id} | ${name}] action "${payload.action}" on "${payload.repository.full_name}"`);

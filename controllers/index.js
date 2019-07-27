@@ -1,5 +1,5 @@
 const config = require('config');
-const util = require('util')
+const util = require('util');
 const moment = require('moment');
 const Plugins = require('../models/plugins');
 
@@ -37,7 +37,7 @@ module.exports = {
 				}
 			}]);
 
-			const developers = (await Plugins.distinct('owner')).length
+			const developers = (await Plugins.distinct('owner')).length;
 
 			const top = await Plugins.aggregate([{
 				$unwind: '$releases'
@@ -74,14 +74,14 @@ module.exports = {
 				pretty: config.prettyHtml,
 				title: config.name,
 				uniquePlugins: totalPlugins.toLocaleString(),
-				pluginInstalls: installs[0].total.toLocaleString(),
-				pluginVersions: versions[0].total.toLocaleString(),
+				pluginInstalls: installs[0] && installs[0].total ? installs[0].total.toLocaleString() : '0',
+				pluginVersions: versions[0] && versions[0].total ? versions[0].total.toLocaleString() : '0',
 				pluginDevelopers: developers.toLocaleString(),
 				top: top.map(p => new Plugins(p)),
 				moment: moment
 			});
 		} catch (ex) {
-			util.log(ex)
+			util.log(ex);
 		}
 	}
 };

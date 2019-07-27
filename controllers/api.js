@@ -1,3 +1,4 @@
+/* eslint-disable require-atomic-updates */
 const Plugins = require('../models/plugins');
 
 module.exports = {
@@ -124,7 +125,7 @@ module.exports = {
 						return {
 							plugin: d.plugin,
 							version: d.version
-						}
+						};
 					}),
 					createdAt: v.createdAt,
 					updatedAt: v.updatedAt,

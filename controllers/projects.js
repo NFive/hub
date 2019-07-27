@@ -1,10 +1,10 @@
 const config = require('config');
-const util = require('util')
+const util = require('util');
 const moment = require('moment');
 const semver = require('semver');
 const Plugins = require('../models/plugins');
 
-const errorPage = require('./error')
+const errorPage = require('./error');
 
 module.exports = {
 	async view(ctx) {
@@ -12,7 +12,7 @@ module.exports = {
 			const version = ctx.params.version;
 
 			const plugin = await Plugins.findOne({ project: ctx.params.project });
-			if (plugin == null) await errorPage.show(ctx, 'Plugin not found!')
+			if (plugin == null) await errorPage.show(ctx, 'Plugin not found!');
 
 			let releases = plugin.releases;
 			if (plugin.has_release) {
@@ -20,7 +20,7 @@ module.exports = {
 			}
 
 			let selectedRelease = releases[0];
-			if (version && version !== "*") {
+			if (version && version !== '*') {
 				selectedRelease = plugin.releases.filter(r => r.version == version)[0];
 			}
 
@@ -39,7 +39,7 @@ module.exports = {
 				moment: moment
 			});
 		} catch (ex) {
-			util.log(ex)
+			util.log(ex);
 		}
 	}
 };

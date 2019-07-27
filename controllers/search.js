@@ -1,7 +1,7 @@
 const config = require('config');
 const Plugins = require('../models/plugins');
 
-const errorPage = require('./error')
+const errorPage = require('./error');
 
 module.exports = {
 	async view(ctx) {

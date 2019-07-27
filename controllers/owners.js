@@ -1,5 +1,5 @@
 const config = require('config');
-const util = require('util')
+const util = require('util');
 const Plugins = require('../models/plugins');
 
 const errorPage = require('./error');
@@ -14,9 +14,9 @@ module.exports = {
 
 			if (ctx.query.page) page = Number(ctx.query.page);
 
-			if (!Number.isInteger(page)) await errorPage.show(ctx, 'Page not Found!')
-			if (page < 1 || page > totalPages) await errorPage.show(ctx, 'Page not Found!')
-			if (plugins.length < 1) await errorPage.show(ctx, 'Owner not Found!')
+			if (!Number.isInteger(page)) await errorPage.show(ctx, 'Page not Found!');
+			if (page < 1 || page > totalPages) await errorPage.show(ctx, 'Page not Found!');
+			if (plugins.length < 1) await errorPage.show(ctx, 'Owner not Found!');
 
 			const pagedResults = plugins.slice(
 				perPage * page - perPage,
@@ -37,7 +37,7 @@ module.exports = {
 				next: page + 1
 			});
 		} catch (ex) {
-			util.log(ex)
+			util.log(ex);
 		}
 	}
 };
