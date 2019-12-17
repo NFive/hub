@@ -47,7 +47,7 @@
     "numeral": "^2.0.6",
     "octicons": "^8.5.0",
     "pug": "^2.0.4",
-    "semver": "^6.3.0",
+    "semver": "^7.1.0",
     "supertest": "^4.0.2"
   },
   "devDependencies": {
