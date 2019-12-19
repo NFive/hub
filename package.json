@@ -24,7 +24,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@octokit/app": "^3.0.2",
+    "@octokit/app": "^4.1.1",
     "@octokit/rest": "^16.28.7",
     "@octokit/webhooks": "^6.2.1",
     "config": "^3.2.2",
