@@ -46,7 +46,7 @@
     "node-fetch": "^2.6.0",
     "numeral": "^2.0.6",
     "octicons": "^8.5.0",
-    "pug": "^2.0.4",
+    "pug": "^3.0.0",
     "semver": "^6.3.0",
     "supertest": "^4.0.2"
   },
